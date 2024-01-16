@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elgrandeproject
+    username: postgres
+    password: nikola
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
