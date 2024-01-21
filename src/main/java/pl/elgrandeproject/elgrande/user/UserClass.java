@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@Table(name ="users")
 @NoArgsConstructor
 @Setter
 @Getter
@@ -40,12 +41,17 @@ public class UserClass {
 
     @ManyToMany
     @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "roleId"))
+//            joinColumns = @JoinColumn(name = "userId"),
+//            inverseJoinColumns = @JoinColumn(name = "roleId"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id" , referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
-
-
-
-
+    public UserClass(String firstName, String lastName, String email, String password, String repeatedPassword) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.repeatedPassword = repeatedPassword;
+    }
 }

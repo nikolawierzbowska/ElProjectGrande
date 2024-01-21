@@ -1,8 +1,6 @@
 package pl.elgrandeproject.elgrande.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +8,9 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
+@Table(name ="roles")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -22,8 +20,9 @@ public class Role {
 
     @Id
     @EqualsAndHashCode.Include
-    private UUID id = UUID.randomUUID();
-    private String typeOfRole;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserClass> users = new HashSet<>();
