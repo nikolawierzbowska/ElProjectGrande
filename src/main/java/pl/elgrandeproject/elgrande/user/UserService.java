@@ -1,34 +1,38 @@
 package pl.elgrandeproject.elgrande.user;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.elgrandeproject.elgrande.role.RoleRepository;
 import pl.elgrandeproject.elgrande.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.user.exception.UserNotFoundException;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private UserMapper userMapper;
+    @Autowired
     private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
+    @Autowired
     private RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
-    }
+//    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
+//        this.userRepository = userRepository;
+//        this.userMapper = userMapper;
+//        this.passwordEncoder = passwordEncoder;
+//        this.roleRepository = roleRepository;
+//    }
 
     public List<UserDto> getUsers() {
         return userRepository.findAllBy().stream()
@@ -48,22 +52,37 @@ public class UserService {
                 .orElseThrow(() -> getUserNotFoundException(email));
     }
 
-    public ResponseEntity<String> saveNewUser(NewUserDto newUserDto) {
+    public UserDto saveNewUser(NewUserDto newUserDto) {
         UserClass saveUser = new UserClass();
 
-        Role roles = roleRepository.findByName("USER").get();
-        saveUser.setRoles(Collections.singleton(roles));
+//        Role roles = roleRepository.findByName("USER").get();
+//        saveUser.setRoles(Collections.singleton(roles));
 
         if (newUserDto.getPassword().equals(newUserDto.getRepeatedPassword())) {
             newUserDto.setPassword(passwordEncoder.encode((newUserDto.getPassword())));
             newUserDto.setRepeatedPassword(newUserDto.getPassword());
             saveUser = userRepository.save(userMapper.mapNewDtoToEntity(newUserDto));
 
-            userMapper.mapEntityToDto(saveUser);
-            return new ResponseEntity<>("User registered success", HttpStatus.OK);
+           return  userMapper.mapEntityToDto(saveUser);
+
         }
-        return new ResponseEntity<>("The passwords are not the same", HttpStatus.BAD_REQUEST);
+     return null;
     }
+
+//    public ResponseEntity<String> login(NewUserDto userDto) {
+//        System.out.println(userDto.getEmail());
+//        System.out.println(userDto.getPassword());
+//
+//
+//        Authentication authentication = authenticationManager
+//                .authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(),
+//                        userDto.getPassword()));
+//
+//
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        return new ResponseEntity<>("User signed success", HttpStatus.OK);
+//    }
 
 
     private UserNotFoundException getUserNotFoundException(String email) {
@@ -75,4 +94,19 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        UserClass user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("not exist"));
+//        return new User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        Optional<UserClass> userinfo = userRepository.findByEmail(email);
+        return userinfo.map(UserInfoDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("not exist " + email));
+    }
+
+//    private Collection<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
+//        return roles.stream()
+//                .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                .collect(Collectors.toList());
+//    }
 }

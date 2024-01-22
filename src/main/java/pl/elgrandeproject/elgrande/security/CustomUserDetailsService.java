@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.elgrandeproject.elgrande.user.Role;
+import pl.elgrandeproject.elgrande.role.Role;
 import pl.elgrandeproject.elgrande.user.UserClass;
 import pl.elgrandeproject.elgrande.user.UserRepository;
 

@@ -1,10 +1,11 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.role;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.elgrandeproject.elgrande.user.UserClass;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,12 +21,18 @@ public class Role {
 
     @Id
     @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserClass> users = new HashSet<>();
 
+    public Role(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
+    public void  assignUser(UserClass user){
+        users.add(user);
+    }
 }

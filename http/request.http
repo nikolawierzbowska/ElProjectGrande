@@ -1,18 +1,46 @@
+### ROLE
+
+POST localhost:8080/api/v1/roles
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "ADMIN"
+}
+
+> {%
+    client.global.set("role-id", response.body.id)
+%}
+
+###
+
+GET localhost:8080/api/v1/roles
+
 ### USER
 
 POST localhost:8080/api/v1/register
 Content-Type: application/json
 
 {
-  "firstName": "Nikol",
-  "lastName": "Wie",
-  "email": "n8@gmail.com",
+  "firstName": "Nikola",
+  "lastName": "N",
+  "email": "nikola@gmail.com",
   "password": "12345a12319",
   "repeatedPassword": "12345a12319"
 }
 > {%
     client.global.set("us-uuid", response.body.id)
 %}
+
+###
+
+POST localhost:8080/api/v1/login
+Content-Type: application/json
+
+{
+  "email": "n18@gmail.com",
+  "password": "12345a12319"
+}
 
 ###
 
@@ -26,4 +54,7 @@ GET localhost:8080/api/v1/users/{{us-uuid}}
 
 GET localhost:8080/api/v1/users/by-{email}
 
-###
+
+### ASSIGN ROLE TO USER
+
+PUT localhost:8080/api/v1/roles/{{role-id}}/users/{{us-uuid}}

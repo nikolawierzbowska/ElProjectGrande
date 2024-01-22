@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.elgrandeproject.elgrande.role.Role;
 
 
 import java.util.HashSet;
@@ -40,9 +41,7 @@ public class UserClass {
     private String repeatedPassword;
 
     @ManyToMany
-    @JoinTable(name = "user_role",
-//            joinColumns = @JoinColumn(name = "userId"),
-//            inverseJoinColumns = @JoinColumn(name = "roleId"))
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id" , referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
@@ -53,5 +52,10 @@ public class UserClass {
         this.email = email;
         this.password = password;
         this.repeatedPassword = repeatedPassword;
+    }
+
+
+    public void addRole(Role role){
+        roles.add(role);
     }
 }
