@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import pl.elgrandeproject.elgrande.security.jwt.JwtTokenService;
 import pl.elgrandeproject.elgrande.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.user.dto.UserDto;
 
@@ -18,14 +19,14 @@ public class UserController {
 
     private UserService userService;
     private AuthenticationManager authenticationManager;
-    private  JwtService jwtService;
+    private JwtTokenService jwtTokenService;
 
 
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @GetMapping("/users")
@@ -43,19 +44,26 @@ public class UserController {
         return  userService.getUserByEmail(email);
     }
 
+
+    @DeleteMapping("/users/{id}")
+    public void softDeleteUser(@PathVariable UUID id ){
+        userService.softDeleteUser(id);
+    }
+
     @PostMapping("/register")
     public UserDto createNewUser(@Valid @RequestBody NewUserDto newUserDto) {
-        return userService.saveNewUser(newUserDto);
+        return userService.registerUser(newUserDto);
     }
 
     @PostMapping("/login")
     public String loginUser(@RequestBody NewUserDto userDto){
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(),
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDto.getEmail(),
                 userDto.getPassword()));
 
 
         if(authenticate.isAuthenticated()){
-            return jwtService.generateToken(userDto.getEmail());
+            return jwtTokenService.generateToken(userDto.getEmail());
 
         }else {
             throw new UsernameNotFoundException("invalid user request");

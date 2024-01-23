@@ -54,7 +54,6 @@ public class UserClass {
         this.repeatedPassword = repeatedPassword;
     }
 
-
     public void addRole(Role role){
         roles.add(role);
     }

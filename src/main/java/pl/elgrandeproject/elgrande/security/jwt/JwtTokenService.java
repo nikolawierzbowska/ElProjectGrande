@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtService {
+public class JwtTokenService {
     private static final String SECRET = "!@HAHKDUEBSAHJPPPPPPPPPPSKNANSSSLDK";
 
     public String generateToken(String email) {
@@ -25,7 +25,8 @@ public class JwtService {
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
 
     }
 

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.elgrandeproject.elgrande.user.JwtService;
+import pl.elgrandeproject.elgrande.user.JwtTokenService;
 import pl.elgrandeproject.elgrande.user.UserService;
 
 import java.io.IOException;
@@ -18,9 +18,13 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
+    private JwtTokenService jwtTokenService;
     private UserService userService;
 
+    public JwtFilter(JwtTokenService jwtTokenService, UserService userService) {
+        this.jwtTokenService = jwtTokenService;
+        this.userService = userService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -29,12 +33,12 @@ public class JwtFilter extends OncePerRequestFilter {
     String email= null;
     if(authHeader != null && authHeader.startsWith("Bearer")){
         token = authHeader.substring(7);
-        email = jwtService.extractEmail(token);
+        email = jwtTokenService.extractEmail(token);
 
         }
     if(email !=null && SecurityContextHolder.getContext().getAuthentication()==null){
         UserDetails userDetails = userService.loadUserByUsername(email);
-        if(jwtService.validateToken(token, userDetails)){
+        if(jwtTokenService.validateToken(token, userDetails)){
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
                     userDetails.getAuthorities());
 

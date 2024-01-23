@@ -1,12 +1,12 @@
 package pl.elgrandeproject.elgrande.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.role.RoleRepository;
+import pl.elgrandeproject.elgrande.security.UserInfoDetails;
 import pl.elgrandeproject.elgrande.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.user.exception.UserNotFoundException;
@@ -18,21 +18,18 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
     private UserMapper userMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
+     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
 
-//    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
-//        this.userRepository = userRepository;
-//        this.userMapper = userMapper;
-//        this.passwordEncoder = passwordEncoder;
-//        this.roleRepository = roleRepository;
-//    }
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+    }
 
     public List<UserDto> getUsers() {
         return userRepository.findAllBy().stream()
@@ -52,11 +49,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> getUserNotFoundException(email));
     }
 
-    public UserDto saveNewUser(NewUserDto newUserDto) {
+    public UserDto registerUser(NewUserDto newUserDto) {
         UserClass saveUser = new UserClass();
-
-//        Role roles = roleRepository.findByName("USER").get();
-//        saveUser.setRoles(Collections.singleton(roles));
 
         if (newUserDto.getPassword().equals(newUserDto.getRepeatedPassword())) {
             newUserDto.setPassword(passwordEncoder.encode((newUserDto.getPassword())));
@@ -64,26 +58,35 @@ public class UserService implements UserDetailsService {
             saveUser = userRepository.save(userMapper.mapNewDtoToEntity(newUserDto));
 
            return  userMapper.mapEntityToDto(saveUser);
-
         }
      return null;
     }
 
-//    public ResponseEntity<String> login(NewUserDto userDto) {
-//        System.out.println(userDto.getEmail());
-//        System.out.println(userDto.getPassword());
-//
-//
-//        Authentication authentication = authenticationManager
-//                .authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(),
-//                        userDto.getPassword()));
-//
-//
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        return new ResponseEntity<>("User signed success", HttpStatus.OK);
-//    }
 
+    public void softDeleteUser(UUID id) {
+        UserClass user = userRepository.findOneById(id)
+                .orElseThrow(() -> getUserNotFoundException(id));
+
+        clearSoftData(user);
+    }
+
+    private void clearSoftData(UserClass user) {
+        int firstNameLength = user.getFirstName().length();
+        user.setFirstName("*".repeat(firstNameLength));
+
+        int lastNameLength = user.getLastName().length();
+        user.setLastName("*".repeat(lastNameLength));
+
+        int atCharPos = user.getEmail().indexOf('@');
+        String randomPref = "deleted-" + UUID.randomUUID();
+        user.setEmail(randomPref + user.getEmail().substring(atCharPos));
+
+        int passwordLength = user.getPassword().length();
+        user.setPassword("*".repeat(passwordLength));
+
+        int repeatedPasswordLength = user.getRepeatedPassword().length();
+        user.setRepeatedPassword("*".repeat(repeatedPasswordLength));
+    }
 
     private UserNotFoundException getUserNotFoundException(String email) {
         return new UserNotFoundException("User with this email " + email + " not exist");
@@ -92,7 +95,6 @@ public class UserService implements UserDetailsService {
     private UserNotFoundException getUserNotFoundException(UUID id) {
         return new UserNotFoundException("User with this " + id + "  not exist");
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -104,9 +106,4 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("not exist " + email));
     }
 
-//    private Collection<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
-//        return roles.stream()
-//                .map(role -> new SimpleGrantedAuthority(role.getName()))
-//                .collect(Collectors.toList());
-//    }
 }
