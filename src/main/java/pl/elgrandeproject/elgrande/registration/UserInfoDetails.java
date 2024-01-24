@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.security;
+package pl.elgrandeproject.elgrande.registration;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,18 +19,18 @@ public class UserInfoDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities;
 
-
-    public  UserInfoDetails(UserClass user){
+    public UserInfoDetails(UserClass user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.authorities = mapRolesToAuthorities(user.getRoles());
     }
 
-    private List<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
+    private List<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
