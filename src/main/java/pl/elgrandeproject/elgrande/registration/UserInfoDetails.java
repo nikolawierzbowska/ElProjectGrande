@@ -1,26 +1,29 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.security;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.elgrandeproject.elgrande.role.Role;
+import pl.elgrandeproject.elgrande.entities.role.Role;
+import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Data
 public class UserInfoDetails implements UserDetails {
 
-    String email = null;
-    String password = null;
-    List<GrantedAuthority> authorities;
+    private String email;
+    private String password;
+    private List<GrantedAuthority> authorities;
 
 
     public  UserInfoDetails(UserClass user){
-        email = user.getEmail();
-        password = user.getPassword();
-        authorities = mapRolesToAuthorities(user.getRoles());
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.authorities = mapRolesToAuthorities(user.getRoles());
     }
 
     private List<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){

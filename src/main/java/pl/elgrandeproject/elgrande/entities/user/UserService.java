@@ -1,34 +1,23 @@
 package pl.elgrandeproject.elgrande.user;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.elgrandeproject.elgrande.role.RoleRepository;
-import pl.elgrandeproject.elgrande.security.UserInfoDetails;
-import pl.elgrandeproject.elgrande.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.user.exception.UserNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService implements UserDetailsService {
-
+public class UserService {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
-     private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
+
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
+
     }
 
     public List<UserDto> getUsers() {
@@ -49,25 +38,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> getUserNotFoundException(email));
     }
 
-    public UserDto registerUser(NewUserDto newUserDto) {
-        UserClass saveUser = new UserClass();
-
-        if (newUserDto.getPassword().equals(newUserDto.getRepeatedPassword())) {
-            newUserDto.setPassword(passwordEncoder.encode((newUserDto.getPassword())));
-            newUserDto.setRepeatedPassword(newUserDto.getPassword());
-            saveUser = userRepository.save(userMapper.mapNewDtoToEntity(newUserDto));
-
-           return  userMapper.mapEntityToDto(saveUser);
-        }
-     return null;
-    }
-
-
     public void softDeleteUser(UUID id) {
         UserClass user = userRepository.findOneById(id)
                 .orElseThrow(() -> getUserNotFoundException(id));
 
         clearSoftData(user);
+        userRepository.save(user);
     }
 
     private void clearSoftData(UserClass user) {
@@ -94,16 +70,6 @@ public class UserService implements UserDetailsService {
 
     private UserNotFoundException getUserNotFoundException(UUID id) {
         return new UserNotFoundException("User with this " + id + "  not exist");
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        UserClass user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UsernameNotFoundException("not exist"));
-//        return new User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
-        Optional<UserClass> userinfo = userRepository.findByEmail(email);
-        return userinfo.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("not exist " + email));
     }
 
 }

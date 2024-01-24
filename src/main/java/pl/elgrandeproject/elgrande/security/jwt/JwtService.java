@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,21 +10,17 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenService {
+public class JwtTokenService  {
     private static final String SECRET = "!@HAHKDUEBSAHJPPPPPPPPPPSKNANSSSLDK";
 
     public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
-                .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 

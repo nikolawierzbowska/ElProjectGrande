@@ -1,7 +1,9 @@
 package pl.elgrandeproject.elgrande.role.dto;
 
+import java.util.UUID;
+
 public record RoleDto(
-        Integer id,
+        UUID id,
         String name
 ) {
 }

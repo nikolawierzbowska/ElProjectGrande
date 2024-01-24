@@ -1,14 +1,15 @@
-package pl.elgrandeproject.elgrande.role;
+package pl.elgrandeproject.elgrande.entities.role;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.elgrandeproject.elgrande.user.UserClass;
+import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name ="roles")
@@ -20,15 +21,15 @@ import java.util.Set;
 public class Role {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @EqualsAndHashCode.Include
-    private Integer id;
     private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserClass> users = new HashSet<>();
 
-    public Role(Integer id, String name) {
-        this.id = id;
+    public Role(String name) {
         this.name = name;
     }
 

@@ -52,6 +52,7 @@ public class UserClass {
         this.email = email;
         this.password = password;
         this.repeatedPassword = repeatedPassword;
+
     }
 
     public void addRole(Role role){

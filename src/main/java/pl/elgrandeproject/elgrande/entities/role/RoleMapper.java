@@ -1,14 +1,14 @@
-package pl.elgrandeproject.elgrande.role;
+package pl.elgrandeproject.elgrande.entities.role;
 
 import org.springframework.stereotype.Component;
-import pl.elgrandeproject.elgrande.role.dto.NewRoleDto;
-import pl.elgrandeproject.elgrande.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
 
 @Component
 public class RoleMapper {
 
     public Role mapNewRoleDtoToEntity(NewRoleDto newRoleDto) {
-        return new Role(newRoleDto.id(), newRoleDto.name());
+        return new Role(newRoleDto.name());
     }
 
     public RoleDto mapEntityToDto(Role role){

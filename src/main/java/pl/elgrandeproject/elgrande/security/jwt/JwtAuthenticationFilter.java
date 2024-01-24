@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.filter;
+package pl.elgrandeproject.elgrande.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,8 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.elgrandeproject.elgrande.user.JwtTokenService;
-import pl.elgrandeproject.elgrande.user.UserService;
+import pl.elgrandeproject.elgrande.security.UserInfoDetailsService;
 
 import java.io.IOException;
 
@@ -19,11 +18,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private JwtTokenService jwtTokenService;
-    private UserService userService;
+    private UserInfoDetailsService userInfoDetailsService;
 
-    public JwtFilter(JwtTokenService jwtTokenService, UserService userService) {
+    public JwtFilter(JwtTokenService jwtTokenService, UserInfoDetailsService userInfoDetailsService) {
         this.jwtTokenService = jwtTokenService;
-        this.userService = userService;
+        this.userInfoDetailsService = userInfoDetailsService;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         }
     if(email !=null && SecurityContextHolder.getContext().getAuthentication()==null){
-        UserDetails userDetails = userService.loadUserByUsername(email);
+        UserDetails userDetails = userInfoDetailsService.loadUserByUsername(email);
         if(jwtTokenService.validateToken(token, userDetails)){
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
                     userDetails.getAuthorities());

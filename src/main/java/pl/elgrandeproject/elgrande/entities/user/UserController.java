@@ -1,6 +1,5 @@
 package pl.elgrandeproject.elgrande.user;
 
-import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,10 +49,7 @@ public class UserController {
         userService.softDeleteUser(id);
     }
 
-    @PostMapping("/register")
-    public UserDto createNewUser(@Valid @RequestBody NewUserDto newUserDto) {
-        return userService.registerUser(newUserDto);
-    }
+
 
     @PostMapping("/login")
     public String loginUser(@RequestBody NewUserDto userDto){

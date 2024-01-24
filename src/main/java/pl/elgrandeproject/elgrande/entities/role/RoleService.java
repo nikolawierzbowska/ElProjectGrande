@@ -1,11 +1,11 @@
-package pl.elgrandeproject.elgrande.role;
+package pl.elgrandeproject.elgrande.entities.role;
 
 import org.springframework.stereotype.Service;
-import pl.elgrandeproject.elgrande.role.dto.NewRoleDto;
-import pl.elgrandeproject.elgrande.role.dto.RoleDto;
-import pl.elgrandeproject.elgrande.user.UserClass;
-import pl.elgrandeproject.elgrande.user.UserRepository;
-import pl.elgrandeproject.elgrande.user.exception.UserNotFoundException;
+import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.user.UserClass;
+import pl.elgrandeproject.elgrande.entities.user.UserRepository;
+import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,12 +28,18 @@ public class RoleService {
                 .toList();
     }
 
+    public RoleDto getRole(UUID id) {
+        return roleRepository.findOneById(id)
+                .map(role -> roleMapper.mapEntityToDto(role))
+                .orElseThrow(() -> getRoleNotFoundException(id));
+    }
+
     public RoleDto saveNewRole(NewRoleDto newRoleDto) {
         Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
         return roleMapper.mapEntityToDto(savedRole);
     }
 
-    public void assignRoleToUser(Integer roleId, UUID userId){
+    public void assignRoleToUser(UUID roleId, UUID userId){
         Role role = roleRepository.findOneById(roleId)
                 .orElseThrow(() -> getRoleNotFoundException(roleId));
 
@@ -46,7 +52,7 @@ public class RoleService {
     }
 
 
-    private UserNotFoundException getRoleNotFoundException(Integer id) {
+    private UserNotFoundException getRoleNotFoundException(UUID id) {
         return new UserNotFoundException("Role with this id " + id + " not exist");
     }
 
