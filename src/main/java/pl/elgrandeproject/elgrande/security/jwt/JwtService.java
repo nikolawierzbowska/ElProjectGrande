@@ -7,33 +7,40 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenService  {
-    private static final String SECRET = "!@HAHKDUEBSAHJPPPPPPPPPPSKNANSSSLDK";
+public class JwtService {
 
-    public String generateToken(String email) {
+    public String generateToken(UserClass userClass) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(userClass.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
 
+    public String generateRefreshToken(Map<String,Object> extraClaims, UserClass userClass) {
+        return Jwts.builder().setClaims(extraClaims)
+                .setSubject(userClass.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 60480000))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode("413F4428472B4B6413F4428472B4B6413F4428472B4B6413F4428472B4B6");
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-
-
-    public String extractEmail(String token) {
+    public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -54,12 +61,12 @@ public class JwtTokenService  {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
-        return  extractExpiration(token).before(new Date());
+    public  Boolean isTokenValid(String token, UserDetails userDetails){
+        final String userEmail = extractUserName(token);
+        return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public  Boolean validateToken(String token, UserDetails userDetails){
-        final String userEmail = extractEmail(token);
-        return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    private Boolean isTokenExpired(String token) {
+        return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 }
