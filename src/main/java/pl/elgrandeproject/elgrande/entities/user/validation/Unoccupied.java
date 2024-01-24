@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.user.validation;
+package pl.elgrandeproject.elgrande.entities.user.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

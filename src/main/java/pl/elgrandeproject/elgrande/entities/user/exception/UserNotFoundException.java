@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.user.exception;
+package pl.elgrandeproject.elgrande.entities.user.exception;
 
 public class UserNotFoundException extends RuntimeException{
 

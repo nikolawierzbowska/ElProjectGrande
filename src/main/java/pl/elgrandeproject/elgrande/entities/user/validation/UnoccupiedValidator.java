@@ -1,8 +1,8 @@
-package pl.elgrandeproject.elgrande.user.validation;
+package pl.elgrandeproject.elgrande.entities.user.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.elgrandeproject.elgrande.user.UserRepository;
+import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 
 public class UnoccupiedValidator implements ConstraintValidator<Unoccupied, String> {
 

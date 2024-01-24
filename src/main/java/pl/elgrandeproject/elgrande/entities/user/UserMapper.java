@@ -1,8 +1,8 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.entities.user;
 
 import org.springframework.stereotype.Component;
-import pl.elgrandeproject.elgrande.user.dto.NewUserDto;
-import pl.elgrandeproject.elgrande.user.dto.UserDto;
+import pl.elgrandeproject.elgrande.entities.user.dto.NewUserDto;
+import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 
 @Component
 public class UserMapper {

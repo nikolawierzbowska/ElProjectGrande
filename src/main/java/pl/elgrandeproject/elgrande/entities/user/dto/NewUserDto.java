@@ -1,11 +1,11 @@
-package pl.elgrandeproject.elgrande.user.dto;
+package pl.elgrandeproject.elgrande.entities.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import pl.elgrandeproject.elgrande.user.validation.Unoccupied;
+import pl.elgrandeproject.elgrande.entities.user.validation.Unoccupied;
 
 @Getter
 @Setter

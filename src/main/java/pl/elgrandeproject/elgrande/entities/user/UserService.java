@@ -1,8 +1,8 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.entities.user;
 
 import org.springframework.stereotype.Service;
-import pl.elgrandeproject.elgrande.user.dto.UserDto;
-import pl.elgrandeproject.elgrande.user.exception.UserNotFoundException;
+import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
+import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.user.dto;
+package pl.elgrandeproject.elgrande.entities.user.dto;
 
 import java.util.UUID;
 

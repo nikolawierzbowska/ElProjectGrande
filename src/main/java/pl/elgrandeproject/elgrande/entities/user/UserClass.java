@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.user;
+package pl.elgrandeproject.elgrande.entities.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.elgrandeproject.elgrande.role.Role;
+import pl.elgrandeproject.elgrande.entities.role.Role;
 
 
 import java.util.HashSet;
@@ -40,7 +40,7 @@ public class UserClass {
     @NotBlank(message = "The field can not be empty.")
     private String repeatedPassword;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id" , referencedColumnName = "id"))
