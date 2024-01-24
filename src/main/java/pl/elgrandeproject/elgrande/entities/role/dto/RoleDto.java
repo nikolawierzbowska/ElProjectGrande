@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande.role.dto;
+package pl.elgrandeproject.elgrande.entities.role.dto;
 
 import java.util.UUID;
 
