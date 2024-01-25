@@ -8,15 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.elgrandeproject.elgrande.entities.opinion.Opinion;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
-@Table(name ="users")
+@Table(name = "users")
 @NoArgsConstructor
 @Setter
 @Getter
@@ -24,7 +22,7 @@ import java.util.UUID;
 public class UserClass {
 
     @Id
-    private UUID id= UUID.randomUUID();
+    private UUID id = UUID.randomUUID();
     @NotBlank(message = "The field can not be empty.")
     private String firstName;
     @NotBlank(message = "The field can not be empty.")
@@ -43,8 +41,14 @@ public class UserClass {
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id" , referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "users",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Opinion> opinions = new ArrayList<>();
 
     public UserClass(String firstName, String lastName, String email, String password, String repeatedPassword) {
         this.firstName = firstName;
@@ -55,7 +59,7 @@ public class UserClass {
 
     }
 
-    public void addRole(Role role){
+    public void addRole(Role role) {
         roles.add(role);
     }
 }

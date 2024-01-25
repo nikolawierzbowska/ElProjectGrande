@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/auth/roles")
+@RequestMapping("api/v1/admin/roles")
 public class RoleController {
 
     private RoleService roleService;
