@@ -1,6 +1,6 @@
 package pl.elgrandeproject.elgrande.registration;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,11 @@ public class UserInfoDetailsService  {
         this.userRepository = userRepository;
     }
 
+    @Bean
     public UserDetailsService userDetailsService(){
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-                return userRepository.findByEmail(email)
-                        .map(UserInfoDetails::new)
-                        .orElseThrow(() -> new UsernameNotFoundException("not exist " + email));
-            }
-        };
+        return email -> userRepository.findByEmail(email)
+                .map(UserInfoDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("not exist " + email));
     }
-
 }
+

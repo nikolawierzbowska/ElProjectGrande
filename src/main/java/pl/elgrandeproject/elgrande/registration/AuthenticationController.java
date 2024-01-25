@@ -10,6 +10,7 @@ import pl.elgrandeproject.elgrande.entities.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationResponse;
 import pl.elgrandeproject.elgrande.security.jwt.JwtService;
+import pl.elgrandeproject.elgrande.security.jwt.RefreshTokenRequest;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -40,6 +41,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     public JwtAuthenticationResponse loginUser(@RequestBody LoginUser loginUser){
         return  authenticationService.login(loginUser);
+    }
+
+    @PostMapping("/refresh")
+    public JwtAuthenticationResponse refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return  authenticationService.refreshToken(refreshTokenRequest);
     }
 
 }

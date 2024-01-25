@@ -2,6 +2,7 @@ package pl.elgrandeproject.elgrande.registration;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.role.Role;
@@ -15,6 +16,7 @@ import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException
 import pl.elgrandeproject.elgrande.registration.exception.PasswordsNotMatchException;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationResponse;
 import pl.elgrandeproject.elgrande.security.jwt.JwtService;
+import pl.elgrandeproject.elgrande.security.jwt.RefreshTokenRequest;
 
 import java.util.HashMap;
 
@@ -48,7 +50,7 @@ public class AuthenticationService {
             user.setRepeatedPassword(user.getPassword());
             user.setFirstName(newUserDto.getFirstName());
 
-            Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
+            Role role = roleRepository.findByName("USER").orElseThrow(
                     () -> new RuntimeException("not exist this role"));
             user.addRole(role);
             role.assignUser(user);
@@ -62,14 +64,17 @@ public class AuthenticationService {
     }
 
     public JwtAuthenticationResponse login(LoginUser loginUser) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(),
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginUser.getEmail(),
                 loginUser.getPassword()));
 
-        var user = userRepository.findByEmail(loginUser.getEmail())
+
+        UserClass userClass = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> getUserNotFoundException());
+        UserDetails user = new UserInfoDetails(userClass);
 
 
-        var jwt = jwtService.generateToken((user));
+        var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
@@ -79,6 +84,24 @@ public class AuthenticationService {
         return jwtAuthenticationResponse;
     }
 
+
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
+        String email  = jwtService.extractUserName(refreshTokenRequest.getToken());
+        UserClass userClass = userRepository.findByEmail(email)
+                .orElseThrow(() -> getUserNotFoundException());
+        UserDetails user = new UserInfoDetails(userClass);
+
+        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
+            var jwt = jwtService.generateToken(user);
+
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+
+            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
+            return jwtAuthenticationResponse;
+        }
+        return  null;
+    }
 
     private UserNotFoundException getUserNotFoundException() {
         return new UserNotFoundException("Invalid email or password");

@@ -11,10 +11,10 @@ import java.util.UUID;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
 
-//    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.users WHERE r.name = :name")
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.users WHERE r.name = :name")
     Optional<Role> findByName(String name);
 
-//    @Query("SELECT r FROM Role r LEFT JOIN FETCH  r.users")
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH  r.users")
     List<Role> findAllBy();
 
     @Query("SELECT r FROM Role r LEFT JOIN FETCH r.users WHERE r.id = :id")

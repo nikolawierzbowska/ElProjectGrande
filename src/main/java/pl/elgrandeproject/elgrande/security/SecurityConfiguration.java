@@ -32,12 +32,14 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/v1/auth/**")
                         .permitAll()
-                        .requestMatchers("api/v1/admin").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("api/v1/user").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/user").hasAnyRole("USER")
+
                         .anyRequest().authenticated())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(

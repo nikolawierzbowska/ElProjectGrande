@@ -1,10 +1,9 @@
 ### ROLE
 
-POST localhost:8080/api/v1/roles
+POST localhost:8080/api/v1/auth/roles
 Content-Type: application/json
 
 {
-  "id": 1,
   "name": "ADMIN"
 }
 
@@ -16,17 +15,21 @@ Content-Type: application/json
 
 GET localhost:8080/api/v1/roles
 
+###
+
+GET localhost:8080/api/v1/roles/{{role-id}}
+
 ### USER
 
-POST localhost:8080/api/v1/register
+POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 
 {
-  "firstName": "Nikola",
+  "firstName": "Ela4",
   "lastName": "N",
-  "email": "nikola@gmail.com",
-  "password": "12345a12319",
-  "repeatedPassword": "12345a12319"
+  "email": "ela4@gmail.com",
+  "password": "12345a1231912",
+  "repeatedPassword": "12345a1231912"
 }
 > {%
     client.global.set("us-uuid", response.body.id)
@@ -34,12 +37,12 @@ Content-Type: application/json
 
 ###
 
-POST localhost:8080/api/v1/login
+POST localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "ola1@gmail.com",
-  "password": "12345a12319"
+  "email": "ela3@gmail.com",
+  "password": "12345a1231912"
 }
 
 ###
@@ -54,7 +57,25 @@ GET localhost:8080/api/v1/users/{{us-uuid}}
 
 GET localhost:8080/api/v1/users/by-{email}
 
+###
+DELETE  localhost:8080/api/v1/users/{id}
 
 ### ASSIGN ROLE TO USER
 
 PUT localhost:8080/api/v1/roles/{{role-id}}/users/{{us-uuid}}
+
+
+###
+
+POST localhost:8080/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGEzQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE4MDkwMywiZXhwIjoxNzA2MTgyMzQzfQ.-H4PStOtwl0jZa14Qv1hzhggvH8opNw4-w87fIEEE88"
+}
+
+
+###
+
+GET http://localhost:8080/api/v1/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGEzQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE4MzE1OSwiZXhwIjoxNzA2MTg0NTk5fQ.h_rComWMuV_YKliTJWfzw_XONcZtLhpdrGQnvhC75pY
