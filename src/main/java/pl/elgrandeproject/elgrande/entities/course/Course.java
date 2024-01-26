@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.elgrandeproject.elgrande.entities.opinion.Opinion;
+import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +39,12 @@ public class Course {
 
     public Course(String name) {
         this.name = name;
+    }
+
+
+    public void addOpinion(Opinion opinion, UserClass userClass){
+        opinions.add(opinion);
+        opinion.setCourses(this);
+        opinion.setUser(userClass);
     }
 }

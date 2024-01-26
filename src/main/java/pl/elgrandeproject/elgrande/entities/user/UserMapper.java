@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import pl.elgrandeproject.elgrande.entities.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 
+import java.util.List;
+
 @Component
 public class UserMapper {
 
@@ -15,7 +17,6 @@ public class UserMapper {
                 dto.getPassword(),
                 dto.getRepeatedPassword()
         );
-
     }
 
     public UserDto mapEntityToDto(UserClass entity) {
@@ -25,9 +26,15 @@ public class UserMapper {
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
-                entity.getRepeatedPassword()
+                entity.getRepeatedPassword(),
+                mapRoleToDto(entity)
 
         );
+    }
 
+    public List<UserDto.UserRole> mapRoleToDto(UserClass user){
+        return  user.getRoles().stream()
+                .map(role -> new UserDto.UserRole(role.getId(), role.getName()))
+                .toList();
     }
 }

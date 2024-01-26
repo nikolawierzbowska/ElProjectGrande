@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1/courses")
 public class OpinionController {
 
     private final OpinionService opinionService;
@@ -18,20 +18,21 @@ public class OpinionController {
         this.opinionService = opinionService;
     }
 
-    @GetMapping("/auth/opinions")
-    public List<OpinionDto> getAllOpinions(){
-        return opinionService.getOpinions();
+    @GetMapping("/{courseId}/opinions")
+    public List<OpinionDto> getAllOpinionsByCourseId(@PathVariable UUID courseId){
+        return opinionService.getAllOpinionsByCourseId(courseId);
     }
 
-    @GetMapping("/user/{userId}/opinions/")
-    public OpinionDto  getOpinionById(@PathVariable UUID userId ) {
-        return opinionService.getOpinionById(userId);
+    @GetMapping("/{courseId}/opinions/{opinionId}")
+    public OpinionDto getOpinionById(@PathVariable UUID courseId, @PathVariable UUID opinionId) {
+        return opinionService.getOpinionById(courseId, opinionId);
 
     }
 
-    @PostMapping("/user/opinions")
-    public OpinionDto createNewOpinion(@Valid @RequestBody NewOpinionDto newOpinionDto){
-        return opinionService.saveNewOpinion(newOpinionDto);
+    @PostMapping("/{courseId}/opinions")
+    public OpinionDto createNewOpinion(@PathVariable UUID courseId, @Valid @RequestBody NewOpinionDto newOpinionDto){
+
+        return opinionService.saveNewOpinion(courseId, newOpinionDto);
     }
 
 //    @DeleteMapping("/user/{id}/opinions/{id}")

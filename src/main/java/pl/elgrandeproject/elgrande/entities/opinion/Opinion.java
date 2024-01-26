@@ -22,7 +22,7 @@ public class Opinion {
 
     @Id
     @EqualsAndHashCode.Include
-    private UUID id=UUID.randomUUID();
+    private UUID id = UUID.randomUUID();
 
     @NotBlank(message = "The field can not be empty.")
     @Size(max = 80, message = "The opinion can not be longer than 80 characters")
@@ -38,4 +38,10 @@ public class Opinion {
         this.description = description;
 
     }
+
+    public void setUser(UserClass user) {
+        this.users = user;
+    }
+
+
 }

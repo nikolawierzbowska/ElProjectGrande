@@ -40,13 +40,11 @@ public class CourseService {
         Course course = courseRepository.findOneById(id)
                 .orElseThrow(() -> getCourseNotFoundException(id));
 
-        if (course != null) {
-            courseRepository.delete(course);
-        }
+       courseRepository.delete(course);
+
     }
 
     public CourseNotFoundException getCourseNotFoundException(UUID id) {
-        return new CourseNotFoundException("course " + id + " not found");
-
+        return new CourseNotFoundException("course with this id " + id + " not found");
     }
 }

@@ -16,4 +16,10 @@ public class CourseMapper {
 
     }
 
+//    public List<CourseDto.OpinionsToCourse> mapOpinions(Course course){
+//        return course.getOpinions().stream()
+//                .map(cor -> new CourseDto.OpinionsToCourse(cor.getId(), cor.getDescription()))
+//                .toList();
+//    }
+
 }

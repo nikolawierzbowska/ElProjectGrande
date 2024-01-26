@@ -13,10 +13,10 @@ public interface UserRepository extends JpaRepository<UserClass, UUID> {
 
     Optional<UserClass> findByEmail(String email);
 
-    @Query("SELECT us FROM UserClass us LEFT JOIN FETCH us.roles WHERE us.id = :id")
+    @Query("SELECT us FROM UserClass us LEFT JOIN FETCH us.roles WHERE us.id = :id AND  us.email NOT LIKE 'deleted-%'")
     Optional<UserClass> findOneById(UUID id);
 
-    @Query("SELECT user FROM UserClass user LEFT JOIN FETCH user.roles")
+    @Query("SELECT user FROM UserClass user LEFT JOIN FETCH user.roles  WHERE user.email NOT LIKE 'deleted-%'")
     List<UserClass> findAllBy();
 
 }

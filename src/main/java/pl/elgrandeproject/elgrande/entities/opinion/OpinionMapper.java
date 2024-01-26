@@ -15,4 +15,5 @@ public class OpinionMapper {
         return new OpinionDto(opinion.getId(), opinion.getDescription());
 
     }
+
 }

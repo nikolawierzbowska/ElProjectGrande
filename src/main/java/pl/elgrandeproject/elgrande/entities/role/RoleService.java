@@ -3,6 +3,7 @@ package pl.elgrandeproject.elgrande.entities.role;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
@@ -85,14 +86,14 @@ public class RoleService {
         userRepository.save(user);
     }
 
-    private UserNotFoundException getRoleNotFoundException(UUID id) {
-        return new UserNotFoundException("Role with this id " + id + " not exist");
+    private RoleNotFoundException getRoleNotFoundException(UUID id) {
+        return new RoleNotFoundException("Role with this id = " + id + " not exist");
     }
 
     private UserNotFoundException getUserNotFoundException(UUID id) {
-        return new UserNotFoundException("User with this " + id + "  not exist");
+        return new UserNotFoundException("User with this = " + id + "  not exist");
     }
-    private UserNotFoundException getRoleNotFoundException(String name) {
-        return new UserNotFoundException("Role with this name " + name + " not exist");
+    private RoleNotFoundException getRoleNotFoundException(String name) {
+        return new RoleNotFoundException("Role with this name " + name + " not exist");
     }
 }

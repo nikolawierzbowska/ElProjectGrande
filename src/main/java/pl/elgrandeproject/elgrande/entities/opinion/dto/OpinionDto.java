@@ -6,6 +6,8 @@ import java.util.UUID;
 public record OpinionDto(
         UUID id,
         String description
+
 ) {
+
 }
 

@@ -1,5 +1,6 @@
 package pl.elgrandeproject.elgrande.entities.user.dto;
 
+import java.util.List;
 import java.util.UUID;
 
 public record UserDto(
@@ -8,6 +9,13 @@ public record UserDto(
          String lastName,
          String email,
          String password,
-         String repeatedPassword
+         String repeatedPassword,
+         List<UserRole> uerRoles
 ) {
+    public  record UserRole(
+            UUID id,
+            String name
+    ){
+
+    }
 }

@@ -1,10 +1,10 @@
-### ROLE
+################## ROLE
 
-POST localhost:8080/api/v1/auth/roles
+POST localhost:8080/api/v1/admin/roles
 Content-Type: application/json
 
 {
-  "name": "ADMIN"
+  "name": "USER"
 }
 
 > {%
@@ -13,21 +13,88 @@ Content-Type: application/json
 
 ###
 
-GET localhost:8080/api/v1/roles
+GET localhost:8080/api/v1/admin/roles
 
 ###
 
-GET localhost:8080/api/v1/roles/{{role-id}}
+GET localhost:8080/api/v1/admin/roles/id/{{role-id}}
 
-### USER
+###
+
+GET localhost:8080/api/v1/admin/roles/{name}
+
+###
+
+PATCH localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
+
+##################ASSIGN ROLE TO USER
+
+PUT localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
+
+
+
+################## COURSE
+
+POST localhost:8080/api/v1/admin/courses
+Content-Type: application/json
+
+{
+  "name": "Matura Matematyka Podstawowa"
+}
+
+> {%
+    client.global.set("course-id", response.body.id)
+%}
+
+###
+
+GET localhost:8080/api/v1/admin/courses
+
+###
+
+GET localhost:8080/api/v1/admin/courses/{{course-id}}
+
+###
+
+DELETE localhost:8080/api/v1/admin/courses/{id}
+
+
+
+###  OPINIONS
+
+POST http://localhost:8080/api/v1/courses/{{course-id}}}/opinions
+Content-Type: application/json
+
+{
+  "description": "jest ok"
+}
+
+> {%
+   client.global.set("course-id", response.body.id)
+%}
+
+
+###
+GET localhost:8080/api/v1/user/{id}/opinions/{id}
+
+###
+
+GET localhost:8080/api/v1/auth/opinions
+
+
+###
+
+DELETE localhost:8080/api/v1/user/{id}/opinions/{id}
+
+##################### USER
 
 POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 
 {
-  "firstName": "Ela4",
-  "lastName": "N",
-  "email": "ela4@gmail.com",
+  "firstName": "Bartek",
+  "lastName": "Nowak",
+  "email": "bartek@gmail.com",
   "password": "12345a1231912",
   "repeatedPassword": "12345a1231912"
 }
@@ -47,11 +114,11 @@ Content-Type: application/json
 
 ###
 
-GET localhost:8080/api/v1/users
+GET localhost:8080/api/v1/auth/users
 
 ###
 
-GET localhost:8080/api/v1/users/{{us-uuid}}
+GET localhost:8080/api/v1/auth/users/9a41d5f7-7a1c-4296-80bf-3c4415265562
 
 ###
 
@@ -60,12 +127,8 @@ GET localhost:8080/api/v1/users/by-{email}
 ###
 DELETE  localhost:8080/api/v1/users/{id}
 
-### ASSIGN ROLE TO USER
-
-PUT localhost:8080/api/v1/roles/{{role-id}}/users/{{us-uuid}}
 
 
-###
 
 POST localhost:8080/api/v1/auth/refresh
 Content-Type: application/json
@@ -79,3 +142,6 @@ Content-Type: application/json
 
 GET http://localhost:8080/api/v1/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGEzQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE4MzE1OSwiZXhwIjoxNzA2MTg0NTk5fQ.h_rComWMuV_YKliTJWfzw_XONcZtLhpdrGQnvhC75pY
+
+
+
