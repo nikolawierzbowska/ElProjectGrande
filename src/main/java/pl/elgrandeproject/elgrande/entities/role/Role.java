@@ -21,8 +21,7 @@ import java.util.UUID;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID id= UUID.randomUUID();
     @EqualsAndHashCode.Include
     private String name;
 

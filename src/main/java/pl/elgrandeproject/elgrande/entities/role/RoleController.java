@@ -22,9 +22,14 @@ public class RoleController {
         return roleService.getAllRoles();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public RoleDto getRole(@PathVariable UUID id){
-        return roleService.getRole(id);
+        return roleService.getRoleById(id);
+    }
+
+    @GetMapping("/{name}")
+    public RoleDto getRoleByName(@PathVariable String name){
+        return roleService.getRoleByName(name);
     }
 
     @PostMapping
@@ -35,5 +40,10 @@ public class RoleController {
     @PutMapping("/{roleId}/users/{userId}")
     public void assignRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId) {
         roleService.assignRoleToUser(roleId, userId);
+    }
+
+    @PatchMapping("/{roleId}/users/{userId}")
+    public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@RequestBody NewRoleDto updatedRoleDto) {
+        roleService.changeRoleToUser(roleId, userId, updatedRoleDto);
     }
 }

@@ -8,6 +8,7 @@ import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,14 +25,20 @@ public class RoleService {
 
     public List<RoleDto> getAllRoles() {
         return roleRepository.findAllBy().stream().
-                map(role ->roleMapper.mapEntityToDto(role))
+                map(role -> roleMapper.mapEntityToDto(role))
                 .toList();
     }
 
-    public RoleDto getRole(UUID id) {
+    public RoleDto getRoleById(UUID id) {
         return roleRepository.findOneById(id)
                 .map(role -> roleMapper.mapEntityToDto(role))
                 .orElseThrow(() -> getRoleNotFoundException(id));
+    }
+
+    public RoleDto getRoleByName(String name) {
+        return roleRepository.findByName(name)
+                .map(role -> roleMapper.mapEntityToDto(role))
+                .orElseThrow(() -> getRoleNotFoundException(name));
     }
 
     public RoleDto saveNewRole(NewRoleDto newRoleDto) {
@@ -39,18 +46,44 @@ public class RoleService {
         return roleMapper.mapEntityToDto(savedRole);
     }
 
-    public void assignRoleToUser(UUID roleId, UUID userId){
-        Role role = roleRepository.findOneById(roleId)
+    public Role findRoleById(UUID roleId) {
+        return roleRepository.findOneById(roleId)
                 .orElseThrow(() -> getRoleNotFoundException(roleId));
+    }
 
-        UserClass user = userRepository.findOneById(userId)
+    public UserClass findUserById(UUID userId) {
+        return userRepository.findOneById(userId)
                 .orElseThrow(() -> getUserNotFoundException(userId));
+    }
+
+    public void assignRoleToUser(UUID roleId, UUID userId) {
+        Role role = findRoleById(roleId);
+        UserClass user = findUserById(userId);
 
         role.assignUser(user);
         user.addRole(role);
         userRepository.save(user);
     }
 
+    public void changeRoleToUser(UUID roleId, UUID userId, NewRoleDto updatedRoleDto) {
+        UserClass user = findUserById(userId);
+
+        Role roleFromDb = roleRepository.findByName(updatedRoleDto.name())
+                .orElseThrow(() -> getRoleNotFoundException(updatedRoleDto.name()));
+
+        Optional<Role> oldRoleUser = user.getRoles().stream()
+                .filter(currentRole -> currentRole.getId()
+                        .equals(roleId)).findFirst();
+
+        oldRoleUser.ifPresent(currentRole -> {
+            if (!currentRole.getName().equals(updatedRoleDto.name())) {
+                user.getRoles().remove(currentRole);
+                user.addRole(roleFromDb);
+                (roleFromDb).assignUser(user);
+            }
+        });
+        userRepository.save(user);
+    }
 
     private UserNotFoundException getRoleNotFoundException(UUID id) {
         return new UserNotFoundException("Role with this id " + id + " not exist");
@@ -58,5 +91,8 @@ public class RoleService {
 
     private UserNotFoundException getUserNotFoundException(UUID id) {
         return new UserNotFoundException("User with this " + id + "  not exist");
+    }
+    private UserNotFoundException getRoleNotFoundException(String name) {
+        return new UserNotFoundException("Role with this name " + name + " not exist");
     }
 }
