@@ -69,9 +69,8 @@ public class OpinionService {
         Opinion opinion = opinionRepository.findOneById(courseId,opinionId)
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
 
-        if (opinion != null) {
-            opinionRepository.delete((opinion));
-        }
+        opinionRepository.delete((opinion));
+
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {

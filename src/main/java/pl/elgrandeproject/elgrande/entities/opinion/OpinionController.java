@@ -35,9 +35,9 @@ public class OpinionController {
         return opinionService.saveNewOpinion(courseId, newOpinionDto);
     }
 
-//    @DeleteMapping("/user/{id}/opinions/{id}")
-//        public void deleteOpinion(@PathVariable UUID id) {
-//            opinionService.deleteOpinion(id);
-//
-//    }
+    @DeleteMapping("/{courseId}/opinions/{opinionId}")
+        public void deleteOpinion(@PathVariable UUID courseId, @PathVariable UUID opinionId) {
+            opinionService.deleteOpinion(courseId, opinionId);
+
+    }
 }

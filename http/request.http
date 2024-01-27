@@ -62,7 +62,7 @@ DELETE localhost:8080/api/v1/admin/courses/{id}
 
 ###  OPINIONS
 
-POST http://localhost:8080/api/v1/courses/{{course-id}}}/opinions
+POST localhost:8080/api/v1/courses/{course-id}}/opinions
 Content-Type: application/json
 
 {
@@ -70,23 +70,23 @@ Content-Type: application/json
 }
 
 > {%
-   client.global.set("course-id", response.body.id)
+   client.global.set("opinion-id", response.body.id)
 %}
 
 
 ###
-GET localhost:8080/api/v1/user/{id}/opinions/{id}
+GET localhost:8080/api/v1/courses/{course-id}}/opinions
 
 ###
 
-GET localhost:8080/api/v1/auth/opinions
+GET localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
 
 
 ###
 
-DELETE localhost:8080/api/v1/user/{id}/opinions/{id}
+DELETE localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
 
-##################### USER
+##################### USER - auth
 
 POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
@@ -114,28 +114,31 @@ Content-Type: application/json
 
 ###
 
-GET localhost:8080/api/v1/auth/users
-
-###
-
-GET localhost:8080/api/v1/auth/users/9a41d5f7-7a1c-4296-80bf-3c4415265562
-
-###
-
-GET localhost:8080/api/v1/users/by-{email}
-
-###
-DELETE  localhost:8080/api/v1/users/{id}
-
-
-
-
 POST localhost:8080/api/v1/auth/refresh
 Content-Type: application/json
 
 {
   "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGEzQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE4MDkwMywiZXhwIjoxNzA2MTgyMzQzfQ.-H4PStOtwl0jZa14Qv1hzhggvH8opNw4-w87fIEEE88"
 }
+
+#################### USERS
+
+
+
+GET localhost:8080/api/v1/admin/users
+
+###
+
+GET localhost:8080/api/v1/admin/users/{id}
+
+###
+
+GET localhost:8080/api/v1/admin/users/by-{email}
+
+###
+
+DELETE  localhost:8080/api/v1/admin/users/{id}
+
 
 
 ###
