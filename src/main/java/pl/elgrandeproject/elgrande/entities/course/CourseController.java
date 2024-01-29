@@ -23,9 +23,9 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
-    @GetMapping("/{id}")
-    public CourseDto getCourseById(@PathVariable UUID id) {
-        return courseService.getCourseById(id);
+    @GetMapping("/{courseId}")
+    public CourseDto getCourseById(@PathVariable UUID courseId) {
+        return courseService.getCourseById(courseId);
     }
 
     @PostMapping
@@ -33,9 +33,9 @@ public class CourseController {
         return courseService.saveNewCourse(newCourseDto);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteCourseById(@PathVariable UUID id) {
-        courseService.deleteCourseById(id);
+    @DeleteMapping("/{courseId}")
+    public void deleteCourseById(@PathVariable UUID courseId) {
+        courseService.deleteCourseById(courseId);
 
     }
 }

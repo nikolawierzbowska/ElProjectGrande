@@ -32,8 +32,8 @@ public class OpinionService {
         this.userRepository = userRepository;
     }
 
-    List<OpinionDto> getAllOpinionsByCourseId(UUID id) {
-        return opinionRepository.findOpinion(id).stream()
+    List<OpinionDto> getAllOpinionsByCourseId(UUID courseId) {
+        return opinionRepository.findOpinion(courseId).stream()
                 .map(entity -> opinionMapper.mapEntityToDto(entity))
                 .toList();
     }

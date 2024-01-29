@@ -30,10 +30,10 @@ public class RoleService {
                 .toList();
     }
 
-    public RoleDto getRoleById(UUID id) {
-        return roleRepository.findOneById(id)
+    public RoleDto getRoleById(UUID roleId) {
+        return roleRepository.findOneById(roleId)
                 .map(role -> roleMapper.mapEntityToDto(role))
-                .orElseThrow(() -> getRoleNotFoundException(id));
+                .orElseThrow(() -> getRoleNotFoundException(roleId));
     }
 
     public RoleDto getRoleByName(String name) {
@@ -78,7 +78,8 @@ public class RoleService {
 
         oldRoleUser.ifPresent(currentRole -> {
             if (!currentRole.getName().equals(updatedRoleDto.name())) {
-                user.getRoles().remove(currentRole);
+                user.clearAssignRole();
+                user.clearAssignRole();
                 user.addRole(roleFromDb);
                 (roleFromDb).assignUser(user);
             }
@@ -86,12 +87,12 @@ public class RoleService {
         userRepository.save(user);
     }
 
-    private RoleNotFoundException getRoleNotFoundException(UUID id) {
-        return new RoleNotFoundException("Role with this id = " + id + " not exist");
+    private RoleNotFoundException getRoleNotFoundException(UUID roleId) {
+        return new RoleNotFoundException("Role with this id = " + roleId + " not exist");
     }
 
-    private UserNotFoundException getUserNotFoundException(UUID id) {
-        return new UserNotFoundException("User with this = " + id + "  not exist");
+    private UserNotFoundException getUserNotFoundException(UUID userId) {
+        return new UserNotFoundException("User with this = " + userId + "  not exist");
     }
     private RoleNotFoundException getRoleNotFoundException(String name) {
         return new RoleNotFoundException("Role with this name " + name + " not exist");

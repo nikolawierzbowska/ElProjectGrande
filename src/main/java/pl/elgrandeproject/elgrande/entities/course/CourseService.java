@@ -25,10 +25,10 @@ public class CourseService {
                 .toList();
     }
 
-    public CourseDto getCourseById(UUID id) {
-        return courseRepository.findOneById(id)
+    public CourseDto getCourseById(UUID courseId) {
+        return courseRepository.findOneById(courseId)
                 .map(entity -> courseMapper.mapEntityToDto(entity))
-                .orElseThrow(() -> getCourseNotFoundException(id));
+                .orElseThrow(() -> getCourseNotFoundException(courseId));
     }
 
     public CourseDto saveNewCourse(NewCourseDto newCourseDto) {
@@ -36,15 +36,15 @@ public class CourseService {
         return courseMapper.mapEntityToDto(courseSaved);
     }
 
-    public void deleteCourseById(UUID id) {
-        Course course = courseRepository.findOneById(id)
-                .orElseThrow(() -> getCourseNotFoundException(id));
+    public void deleteCourseById(UUID courseId) {
+        Course course = courseRepository.findOneById(courseId)
+                .orElseThrow(() -> getCourseNotFoundException(courseId));
 
        courseRepository.delete(course);
 
     }
 
-    public CourseNotFoundException getCourseNotFoundException(UUID id) {
-        return new CourseNotFoundException("course with this id " + id + " not found");
+    public CourseNotFoundException getCourseNotFoundException(UUID courseId) {
+        return new CourseNotFoundException("course with this id " + courseId + " not found");
     }
 }

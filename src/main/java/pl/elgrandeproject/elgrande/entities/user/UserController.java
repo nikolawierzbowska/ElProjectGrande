@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/admin/users")
 public class UserController {
 
     private UserService userService;
@@ -17,24 +17,24 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public List<UserDto> getUsers(){
         return userService.getUsers();
     }
 
-    @GetMapping("/users/{id}")
-    public UserDto getUserById(@PathVariable UUID id){
-       return userService.getUserById(id);
+    @GetMapping("/{userId}")
+    public UserDto getUserById(@PathVariable UUID userId){
+       return userService.getUserById(userId);
     }
 
-    @GetMapping("/users/by-{email}")
+    @GetMapping("/by-{email}")
     public UserDto getUserByEmail(@PathVariable String email){
         return  userService.getUserByEmail(email);
     }
 
-    @DeleteMapping("/users/{id}")
-    public void softDeleteUser(@PathVariable UUID id ){
-        userService.softDeleteUser(id);
+    @DeleteMapping("/{userId}")
+    public void softDeleteUser(@PathVariable UUID userId ){
+        userService.softDeleteUser(userId);
     }
 
 

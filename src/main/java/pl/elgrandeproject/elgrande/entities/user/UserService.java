@@ -26,10 +26,10 @@ public class UserService {
                 .toList();
     }
 
-    public UserDto getUserById(UUID id) {
-        return userRepository.findOneById(id)
+    public UserDto getUserById(UUID userId) {
+        return userRepository.findOneById(userId)
                 .map(entity -> userMapper.mapEntityToDto(entity))
-                .orElseThrow(() -> getUserNotFoundException(id));
+                .orElseThrow(() -> getUserNotFoundException(userId));
     }
 
     public UserDto getUserByEmail(String email) {
@@ -38,11 +38,13 @@ public class UserService {
                 .orElseThrow(() -> getUserNotFoundException(email));
     }
 
-    public void softDeleteUser(UUID id) {
-        UserClass user = userRepository.findOneById(id)
-                .orElseThrow(() -> getUserNotFoundException(id));
+    public void softDeleteUser(UUID userId) {
+        UserClass user = userRepository.findOneById(userId)
+                .orElseThrow(() -> getUserNotFoundException(userId));
 
         clearSoftData(user);
+        user.clearAssignRole();
+
         userRepository.save(user);
     }
 
@@ -68,8 +70,8 @@ public class UserService {
         return new UserNotFoundException("User with this email " + email + " not exist");
     }
 
-    private UserNotFoundException getUserNotFoundException(UUID id) {
-        return new UserNotFoundException("User with this " + id + "  not exist");
+    private UserNotFoundException getUserNotFoundException(UUID userId) {
+        return new UserNotFoundException("User with this " + userId + "  not exist");
     }
 
 }

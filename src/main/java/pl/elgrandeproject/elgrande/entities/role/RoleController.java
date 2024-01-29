@@ -22,9 +22,9 @@ public class RoleController {
         return roleService.getAllRoles();
     }
 
-    @GetMapping("/id/{id}")
-    public RoleDto getRole(@PathVariable UUID id){
-        return roleService.getRoleById(id);
+    @GetMapping("/id/{roleId}")
+    public RoleDto getRole(@PathVariable UUID roleId){
+        return roleService.getRoleById(roleId);
     }
 
     @GetMapping("/{name}")

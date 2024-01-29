@@ -62,4 +62,9 @@ public class UserClass {
     public void addRole(Role role) {
         roles.add(role);
     }
+
+    public void clearAssignRole() {
+        getRoles().clear();
+    }
+
 }
