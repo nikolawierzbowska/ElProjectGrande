@@ -33,7 +33,7 @@ public class UserClass {
     @Column(unique = true)
     private String email;
     @NotBlank(message = "The field can not be empty.")
-    @Size(min = 10, message = "The password must be 10 characters minimum")
+    @Size(min = 5, message = "The password must be 10 characters minimum")
     private String password;
     @NotBlank(message = "The field can not be empty.")
     private String repeatedPassword;

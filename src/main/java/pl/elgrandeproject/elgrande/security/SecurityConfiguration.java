@@ -3,6 +3,7 @@ package pl.elgrandeproject.elgrande.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,7 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.elgrandeproject.elgrande.registration.UserInfoDetailsService;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationFilter;
@@ -23,8 +26,11 @@ import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationFilter;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-    private UserInfoDetailsService userInfoDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserInfoDetailsService userInfoDetailsService;
+
+
+
 
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, UserInfoDetailsService userInfoDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -36,13 +42,20 @@ public class SecurityConfiguration {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions").permitAll()
-                        .requestMatchers("/api/v1/admin/roles/**", "/api/v1/admin/courses/**",
-                                "/api/v1/courses/{courseId}/opinions", "/api/v1/courses/{courseId}/opinions/{opinionId}")
+
+                        .requestMatchers("/api/v1/admin/roles/**",
+                                "/api/v1/admin/courses/**",
+                                "/api/v1/admin/users/**",
+                                "/api/v1/admin/courses/{courseId}/opinions",
+                                "/api/v1/courses/{courseId}/opinions/{opinionId}")
                         .hasAnyRole("ADMIN")
-                        .requestMatchers("/api/v1/user/**", "/api/v1/courses/{courseId}/opinions",
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{courseId}/opinions/{opinionId}")
+                        .hasAnyRole("ADMIN")
+
+                        .requestMatchers("/api/v1/user/**",
+                                "/api/v1/courses/{courseId}/opinions",
                                 "/api/v1/courses/{courseId}/opinions/{opinionId}")
                         .hasAnyRole("USER")
 
@@ -50,6 +63,8 @@ public class SecurityConfiguration {
 
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
+
+//                .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -75,5 +90,9 @@ public class SecurityConfiguration {
         return config.getAuthenticationManager();
     }
 
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+    }
 }
 
