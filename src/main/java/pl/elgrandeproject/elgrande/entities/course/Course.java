@@ -43,8 +43,7 @@ public class Course {
 
 
     public void addOpinion(Opinion opinion, UserClass userClass){
-        opinions.add(opinion);
-        opinion.setCourses(this);
         opinion.setUser(userClass);
+        opinions.add(opinion);
     }
 }

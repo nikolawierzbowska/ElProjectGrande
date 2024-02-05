@@ -1,18 +1,21 @@
 package pl.elgrandeproject.elgrande.entities.course.dto;
 
+import java.util.List;
 import java.util.UUID;
 
 public record CourseDto(
         UUID id,
-        String name
-//        List<OpinionsToCourse> opinions
+        String name,
+        List<OpinionsToCourse> opinions
 ) {
 
-//    public record OpinionsToCourse (
-//            UUID id,
-//            String description
-//
-//    ){
+    public record OpinionsToCourse (
+            UUID id,
+            String description
+
+    ) {
+
+    }
 
 
 }
