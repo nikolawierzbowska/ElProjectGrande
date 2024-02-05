@@ -25,10 +25,10 @@ public class Opinion {
     private UUID id = UUID.randomUUID();
 
     @NotBlank(message = "The field can not be empty.")
-    @Size(max = 80, message = "The opinion can not be longer than 80 characters")
+    @Size(max = 120, message = "The opinion can not be longer than 120 characters")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserClass users;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +36,10 @@ public class Opinion {
 
     public Opinion(String description) {
         this.description = description;
+    }
 
+    public void addUser(UserClass user) {
+        this.users = user;
     }
 
     public void setUser(UserClass user) {

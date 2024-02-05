@@ -11,10 +11,10 @@ import java.util.UUID;
 @Repository
 public interface OpinionRepository extends JpaRepository<Opinion, UUID> {
 
-    @Query("SELECT o FROM Opinion o LEFT JOIN FETCH o.courses WHERE  o.courses.id = :id")
+    @Query("SELECT o FROM Opinion o  LEFT JOIN FETCH o.courses WHERE  o.courses.id = :id")
     List<Opinion> findOpinion(UUID id);
 
-    @Query("SELECT o FROM Opinion o LEFT JOIN FETCH o.courses WHERE  o.courses.id = :courseId AND o.id = :opinionId")
+    @Query("SELECT o FROM Opinion o LEFT JOIN FETCH  o.courses WHERE  o.courses.id = :courseId AND o.id = :opinionId")
     Optional<Opinion> findOneById(UUID courseId, UUID opinionId);
 
 }

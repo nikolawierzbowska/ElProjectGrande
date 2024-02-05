@@ -27,7 +27,7 @@ public class Course {
     private UUID id = UUID.randomUUID();
 
     @NotBlank(message =  "The field can not be empty.")
-    @Size(max = 25, message = "The name can not be longer than 25 characters")
+    @Size(max = 35, message = "The name can not be longer than 35 characters")
     private String name;
 
     @OneToMany(
@@ -44,6 +44,7 @@ public class Course {
 
     public void addOpinion(Opinion opinion, UserClass userClass){
         opinion.setUser(userClass);
+        opinion.setCourses(this);
         opinions.add(opinion);
     }
 }

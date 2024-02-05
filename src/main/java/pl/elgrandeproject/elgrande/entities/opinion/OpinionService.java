@@ -58,8 +58,13 @@ public class OpinionService {
         UserClass user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("not found this user"));
 
+
+
         course.addOpinion(opinion, user);
+
+        opinion.addUser(user);
         Opinion savedOpinion = opinionRepository.save(opinion);
+
 
         return opinionMapper.mapEntityToDto(savedOpinion);
     }

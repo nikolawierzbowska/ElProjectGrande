@@ -12,7 +12,14 @@ public class OpinionMapper {
     }
 
     public OpinionDto mapEntityToDto(Opinion opinion){
-        return new OpinionDto(opinion.getId(), opinion.getDescription());
+        return new OpinionDto(opinion.getId(), opinion.getDescription(), mapUsers(opinion));
+
+    }
+
+    public OpinionDto.UserAddOpinion mapUsers(Opinion opinion){
+        return new OpinionDto.UserAddOpinion(opinion.getUsers().getId(), opinion.getUsers().getFirstName(),
+                opinion.getUsers().getLastName(), opinion.getUsers().getEmail(), opinion.getUsers().getPassword(),
+                opinion.getUsers().getRepeatedPassword());
 
     }
 

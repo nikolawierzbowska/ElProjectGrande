@@ -5,9 +5,20 @@ import java.util.UUID;
 
 public record OpinionDto(
         UUID id,
-        String description
+        String description,
+        UserAddOpinion user
 
 ) {
+    public record UserAddOpinion (
+        UUID id,
+        String firstName,
+        String lastName,
+        String email,
+        String password,
+        String repeatedPassword
+) {
+
+}
 
 }
 
