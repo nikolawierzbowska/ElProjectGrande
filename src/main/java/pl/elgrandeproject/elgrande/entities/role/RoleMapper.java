@@ -10,7 +10,7 @@ import java.util.List;
 public class RoleMapper {
 
     public Role mapNewRoleDtoToEntity(NewRoleDto newRoleDto) {
-        return new Role(newRoleDto.name());
+        return new Role(newRoleDto.getName());
     }
 
     public RoleDto mapEntityToDto(Role role){

@@ -3,6 +3,7 @@ package pl.elgrandeproject.elgrande.entities.role;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -37,14 +38,28 @@ public class RoleService {
     }
 
     public RoleDto getRoleByName(String name) {
-        return roleRepository.findByName(name)
-                .map(role -> roleMapper.mapEntityToDto(role))
-                .orElseThrow(() -> getRoleNotFoundException(name));
+//        return roleRepository.findByName(name)
+//                .map(role -> roleMapper.mapEntityToDto(role))
+//                .orElseThrow(() -> getRoleNotFoundException(name));
+        if(roleRepository.findByName(name.toUpperCase())
+                .map(entity -> roleMapper.mapEntityToDto(entity)).isEmpty()){
+            return null;
+        }
+        return roleRepository.findByName(name.toUpperCase())
+                .map(entity -> roleMapper.mapEntityToDto(entity)).get();
+
     }
 
     public RoleDto saveNewRole(NewRoleDto newRoleDto) {
-        Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
-        return roleMapper.mapEntityToDto(savedRole);
+        String upperCaseName = newRoleDto.getName().toUpperCase();
+        if(roleRepository.findByName(upperCaseName).isEmpty()){
+            newRoleDto.setName(upperCaseName);
+            Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
+            return roleMapper.mapEntityToDto(savedRole);
+        }
+        throw new RoleNotFoundException("This role name : "+ newRoleDto.getName() + " exist!");
+
+
     }
 
     public Role findRoleById(UUID roleId) {
@@ -69,15 +84,15 @@ public class RoleService {
     public void changeRoleToUser(UUID roleId, UUID userId, NewRoleDto updatedRoleDto) {
         UserClass user = findUserById(userId);
 
-        Role roleFromDb = roleRepository.findByName(updatedRoleDto.name())
-                .orElseThrow(() -> getRoleNotFoundException(updatedRoleDto.name()));
+        Role roleFromDb = roleRepository.findByName(updatedRoleDto.getName())
+                .orElseThrow(() -> getRoleNotFoundException(updatedRoleDto.getName()));
 
         Optional<Role> oldRoleUser = user.getRoles().stream()
                 .filter(currentRole -> currentRole.getId()
                         .equals(roleId)).findFirst();
 
         oldRoleUser.ifPresent(currentRole -> {
-            if (!currentRole.getName().equals(updatedRoleDto.name())) {
+            if (!currentRole.getName().equals(updatedRoleDto.getName())) {
                 user.clearAssignRole();
                 user.clearAssignRole();
                 user.addRole(roleFromDb);
@@ -89,6 +104,29 @@ public class RoleService {
 
     private RoleNotFoundException getRoleNotFoundException(UUID roleId) {
         return new RoleNotFoundException("Role with this id = " + roleId + " not exist");
+    }
+
+      public void deleteRoleById(UUID roleId) {
+        Role role = roleRepository.findOneById(roleId)
+                .orElseThrow(() -> getRoleNotFoundException(roleId));
+
+        roleRepository.delete(role);
+
+    }
+
+    public void updateRoleById(UUID roleId, NewRoleDto updateRoleDto) {
+        Role role = roleRepository.findOneById(roleId)
+                .orElseThrow(() -> getRoleNotFoundException(roleId));
+
+
+        String upperCaseName = updateRoleDto.getName().toUpperCase();
+        if(getRoleByName(upperCaseName) == null ){
+            role.setName(roleMapper.mapNewRoleDtoToEntity(updateRoleDto).getName());
+            roleRepository.save(role);
+        }else{
+            throw new RoleFoundException("Exist this role name");
+        }
+
     }
 
     private UserNotFoundException getUserNotFoundException(UUID userId) {

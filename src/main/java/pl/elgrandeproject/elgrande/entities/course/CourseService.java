@@ -48,8 +48,10 @@ public class CourseService {
             newCourseDto.setName(upperCaseName);
             Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
             return courseMapper.mapEntityToDto(courseSaved);
+        }else{
+
+            throw new CourseFoundException("Exist this course name: " + newCourseDto.getName());
         }
-        throw new CourseFoundException("Exist this name course");
 
     }
 

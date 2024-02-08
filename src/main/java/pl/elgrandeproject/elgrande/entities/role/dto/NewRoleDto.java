@@ -1,7 +1,10 @@
 package pl.elgrandeproject.elgrande.entities.role.dto;
 
-public record NewRoleDto(
+import lombok.Getter;
+import lombok.Setter;
 
-       String name
-) {
+@Getter
+@Setter
+public  class NewRoleDto {
+    String name;
 }

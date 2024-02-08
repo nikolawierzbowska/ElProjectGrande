@@ -46,4 +46,14 @@ public class RoleController {
     public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@RequestBody NewRoleDto updatedRoleDto) {
         roleService.changeRoleToUser(roleId, userId, updatedRoleDto);
     }
+
+    @DeleteMapping("/{roleId}")
+    public void deleteRoleById(@PathVariable UUID roleId){
+        roleService.deleteRoleById(roleId);
+    }
+
+    @PatchMapping("/{roleId}")
+    public void updateRoleById(@PathVariable UUID roleId, @RequestBody NewRoleDto updateRoleDto){
+        roleService.updateRoleById(roleId, updateRoleDto);
+    }
 }
