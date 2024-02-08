@@ -15,6 +15,9 @@ public interface CourseRepository  extends JpaRepository<Course, UUID> {
     @Query("SELECT c FROM Course c LEFT  JOIN  FETCH  c.opinions WHERE c.id = :id ")
     Optional<Course> findOneById(UUID id);
 
+    @Query("SELECT c FROM Course c LEFT  JOIN  FETCH  c.opinions WHERE c.name = :courseName ")
+    Optional<Course> findOneByName(String courseName);
+
 
 
 

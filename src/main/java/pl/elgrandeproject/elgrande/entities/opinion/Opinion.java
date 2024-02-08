@@ -31,7 +31,7 @@ public class Opinion {
     @ManyToOne(fetch = FetchType.EAGER)
     private UserClass users;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Course courses;
 
     public Opinion(String description) {

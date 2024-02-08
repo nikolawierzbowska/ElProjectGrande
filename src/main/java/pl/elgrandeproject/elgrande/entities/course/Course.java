@@ -31,6 +31,7 @@ public class Course {
     private String name;
 
     @OneToMany(
+            fetch = FetchType.EAGER,
             mappedBy = "courses",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

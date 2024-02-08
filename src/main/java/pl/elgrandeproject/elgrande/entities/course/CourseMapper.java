@@ -10,7 +10,7 @@ import java.util.List;
 public class CourseMapper {
 
     public Course mapNewCourseDtoToEntity(NewCourseDto newCourseDto){
-        return new Course(newCourseDto.name());
+        return new Course(newCourseDto.getName());
     }
 
     public CourseDto mapEntityToDto( Course course) {

@@ -45,6 +45,7 @@ public class UserClass {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(
+            fetch = FetchType.EAGER,
             mappedBy = "users",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
