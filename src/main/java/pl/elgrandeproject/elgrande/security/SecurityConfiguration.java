@@ -38,18 +38,19 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/error/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions").permitAll()
 
-                        .requestMatchers("/api/v1/admin/roles/**",
+                        .requestMatchers("/api/v1/admin/roles/**", "/error/**",
                                 "/api/v1/admin/courses/**",
                                 "/api/v1/admin/users/**",
                                 "/api/v1/admin/courses/{courseId}/opinions",
-                                "/api/v1/courses/{courseId}/opinions/{opinionId}")
+                                "/api/v1/courses/{courseId}/opinions/{opinionId}").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions")
                         .hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{courseId}/opinions/{opinionId}")
                         .hasAnyRole("ADMIN")
@@ -58,14 +59,15 @@ public class SecurityConfiguration {
                                 "/api/v1/courses/{courseId}/opinions",
                                 "/api/v1/courses/{courseId}/opinions/{opinionId}")
                         .hasAnyRole("USER")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/courses/{courseId}/opinions/{opinionId}").hasAnyRole("USER")
 
                         .anyRequest().authenticated())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
 
-//                .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint))
-                .authenticationProvider(authenticationProvider())
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint))
+//                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 

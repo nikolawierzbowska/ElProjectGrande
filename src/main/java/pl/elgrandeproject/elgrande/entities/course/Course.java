@@ -2,6 +2,7 @@ package pl.elgrandeproject.elgrande.entities.course;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Course {
     private UUID id = UUID.randomUUID();
 
     @NotBlank(message =  "The field can not be empty.")
+    @NotNull
     @Size(max = 35, message = "The name can not be longer than 35 characters")
     private String name;
 

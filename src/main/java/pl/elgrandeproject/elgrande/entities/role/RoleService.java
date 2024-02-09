@@ -47,7 +47,6 @@ public class RoleService {
         }
         return roleRepository.findByName(name.toUpperCase())
                 .map(entity -> roleMapper.mapEntityToDto(entity)).get();
-
     }
 
     public RoleDto saveNewRole(NewRoleDto newRoleDto) {
@@ -57,9 +56,7 @@ public class RoleService {
             Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
             return roleMapper.mapEntityToDto(savedRole);
         }
-        throw new RoleNotFoundException("This role name : "+ newRoleDto.getName() + " exist!");
-
-
+        throw new RoleFoundException("Taka nazwa : "+ newRoleDto.getName() + " już istnieje !");
     }
 
     public Role findRoleById(UUID roleId) {
@@ -97,42 +94,41 @@ public class RoleService {
                 user.clearAssignRole();
                 user.addRole(roleFromDb);
                 (roleFromDb).assignUser(user);
+                userRepository.save(user);
+            }else{
+                throw new RoleNotFoundException("Nie można znaleźć takiej nazwy roli");
             }
         });
-        userRepository.save(user);
     }
 
-    private RoleNotFoundException getRoleNotFoundException(UUID roleId) {
-        return new RoleNotFoundException("Role with this id = " + roleId + " not exist");
-    }
-
-      public void deleteRoleById(UUID roleId) {
+       public void deleteRoleById(UUID roleId) {
         Role role = roleRepository.findOneById(roleId)
                 .orElseThrow(() -> getRoleNotFoundException(roleId));
-
         roleRepository.delete(role);
-
     }
 
     public void updateRoleById(UUID roleId, NewRoleDto updateRoleDto) {
         Role role = roleRepository.findOneById(roleId)
                 .orElseThrow(() -> getRoleNotFoundException(roleId));
 
-
         String upperCaseName = updateRoleDto.getName().toUpperCase();
         if(getRoleByName(upperCaseName) == null ){
             role.setName(roleMapper.mapNewRoleDtoToEntity(updateRoleDto).getName());
             roleRepository.save(role);
         }else{
-            throw new RoleFoundException("Exist this role name");
+            throw new RoleFoundException("Istnieje taka nazwa: " + updateRoleDto.getName().toUpperCase());
         }
-
     }
 
     private UserNotFoundException getUserNotFoundException(UUID userId) {
-        return new UserNotFoundException("User with this = " + userId + "  not exist");
+        return new UserNotFoundException("Użytkownik z takim id: " + userId + "  nie istnieje");
     }
+
     private RoleNotFoundException getRoleNotFoundException(String name) {
-        return new RoleNotFoundException("Role with this name " + name + " not exist");
+        return new RoleNotFoundException("Użytkownik z taką nazwą: " + name + " nie istnieje");
+    }
+
+    private RoleNotFoundException getRoleNotFoundException(UUID roleId) {
+        return new RoleNotFoundException("Rola z takim id:  " + roleId + " nie istnieje");
     }
 }

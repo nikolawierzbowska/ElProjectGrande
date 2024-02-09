@@ -5,11 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import pl.elgrandeproject.elgrande.entities.course.exception.CourseFoundException;
 import pl.elgrandeproject.elgrande.entities.course.exception.CourseNotFoundException;
+import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfNewNameCourseException;
+import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfUpdateNameCourseException;
+import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
+import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.validation.EmailInUseException;
 import pl.elgrandeproject.elgrande.registration.exception.PasswordsNotMatchException;
-import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -36,6 +40,15 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+
+    @ExceptionHandler(RoleFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse roleFound(RoleFoundException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
+
+
     @ExceptionHandler(PasswordsNotMatchException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse passwordsNotMatch(PasswordsNotMatchException e){
@@ -47,6 +60,28 @@ public class ErrorHandler {
     public ErrorResponse courseNotFound(CourseNotFoundException e){
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(CourseFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse nameOfCourseExist(CourseFoundException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(LengthOfUpdateNameCourseException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse notCorrectLength(LengthOfUpdateNameCourseException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(LengthOfNewNameCourseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse notCorrectLength(LengthOfNewNameCourseException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
+
+
+
 
     public record ErrorResponse(String info) {
 

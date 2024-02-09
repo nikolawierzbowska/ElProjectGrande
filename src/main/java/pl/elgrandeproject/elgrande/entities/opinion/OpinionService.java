@@ -48,7 +48,7 @@ public class OpinionService {
     public OpinionDto saveNewOpinion(UUID courseId, NewOpinionDto newOpinionDto) {
         Course course = courseRepository.findOneById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(
-                        "Not found this course id =  " + courseId));
+                        "Kurs z takim ID: "+  courseId +"  nie został znaleziony"));
 
         Opinion opinion = opinionMapper.mapNewOpinionDtoToEntity(newOpinionDto);
 
