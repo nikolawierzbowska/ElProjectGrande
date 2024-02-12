@@ -47,8 +47,8 @@ public class AuthenticationService {
             user.setLastName(newUserDto.getLastName());
             user.setEmail(newUserDto.getEmail());
             user.setPassword(passwordEncoder.encode((newUserDto.getPassword())));
-            user.setRepeatedPassword(user.getPassword());
-            user.setFirstName(newUserDto.getFirstName());
+            user.setRepeatedPassword(passwordEncoder.encode((newUserDto.getRepeatedPassword())));
+
 
             Role role = roleRepository.findByName("USER").orElseThrow(
                     () -> new RuntimeException("not exist this role"));
@@ -56,7 +56,8 @@ public class AuthenticationService {
             role.assignUser(user);
 
             UserClass savedUser = userRepository.save(user);
-            return userMapper.mapEntityToDto(savedUser);
+            UserDto userDto = userMapper.mapEntityToDto(savedUser);
+            return userDto;
         }
 
         throw new PasswordsNotMatchException("Passwords do not match! ");

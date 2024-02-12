@@ -4,7 +4,7 @@ POST localhost:8080/api/v1/admin/roles
 Content-Type: application/json
 
 {
-  "name": "USER"
+  "name": "ADMIN"
 }
 
 > {%
@@ -14,32 +14,42 @@ Content-Type: application/json
 ###
 
 GET localhost:8080/api/v1/admin/roles
+Authorization: Bearer {{auth-token}}
 
 ###
 
 GET localhost:8080/api/v1/admin/roles/id/{{role-id}}
+Authorization: Bearer {{auth-token}}
 
 ###
 
 GET localhost:8080/api/v1/admin/roles/{name}
+Authorization: Bearer {{auth-token}}
 
 ###
 
 PATCH localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
+Authorization: Bearer {{auth-token}}
+
+###
+
+DELETE localhost:8080/api/v1/admin/roles/{roleId}
+Authorization: Bearer {{auth-token}}
 
 ##################ASSIGN ROLE TO USER
 
 PUT localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
-
+Authorization: Bearer {{auth-token}}
 
 
 ################## COURSE
 
 POST localhost:8080/api/v1/admin/courses
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtvbGFAZ21haWwuY29tIiwiaWF0IjoxNzA3Mzg1MDc0LCJleHAiOjE3MDczODY1MTR9.viL2nFydv2pkl7K-9owYHwxD-DGs84Lgrh9IHkPLFvg
 
 {
-  "name": "Matura Matematyka Podstawowa"
+  "name": "Mataaaaaaaaa"
 }
 
 > {%
@@ -49,24 +59,42 @@ Content-Type: application/json
 ###
 
 GET localhost:8080/api/v1/admin/courses
+Authorization: Bearer {{auth-token}}
+###
+
+GET localhost:8080/api/v1/admin/courses/id/0b20d02b-42d9-4328-9254-e91421e356ac
+Authorization: Bearer {{auth-token}}
+###
+
+GET localhost:8080/api/v1/admin/courses/Matura Matematyka Podstawowa
+Authorization: Bearer {{auth-token}}
+###
+
+
+PATCH localhost:8080/api/v1/admin/courses/3fad1d6a-f04c-4d96-b220-aba44d0c2d05
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "name": "Mat - update2"
+}
 
 ###
 
-GET localhost:8080/api/v1/admin/courses/{{course-id}}
 
-###
-
-DELETE localhost:8080/api/v1/admin/courses/{id}
-
+DELETE localhost:8080/api/v1/admin/courses/fb716900-35bb-4f5b-899f-ece06caad87e
+Authorization: Bearer {{auth-token}}
 
 
 ###  OPINIONS
 
-POST localhost:8080/api/v1/courses/{course-id}}/opinions
+POST localhost:8080/api/v1/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "description": "jest ok"
+
+  "description": "Polecam kurs, maturzstom!!"
 }
 
 > {%
@@ -75,7 +103,7 @@ Content-Type: application/json
 
 
 ###
-GET localhost:8080/api/v1/courses/{course-id}}/opinions
+GET localhost:8080/api/v1/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions
 
 ###
 
@@ -84,7 +112,8 @@ GET localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
 
 ###
 
-DELETE localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
+DELETE localhost:8080/api/v1/admin/courses/{courseId}/opinions/{opinionId}
+Authorization: Bearer {{auth-token}}
 
 ##################### USER - auth
 
@@ -92,11 +121,11 @@ POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 
 {
-  "firstName": "Bartek",
-  "lastName": "Nowak",
-  "email": "bartek@gmail.com",
-  "password": "12345a1231912",
-  "repeatedPassword": "12345a1231912"
+  "firstName": "Ania",
+  "lastName": "Wilk",
+  "email": "ania@gmail.com",
+  "password": "Ania123#",
+  "repeatedPassword": "Ania123#"
 }
 > {%
     client.global.set("us-uuid", response.body.id)
@@ -104,13 +133,16 @@ Content-Type: application/json
 
 ###
 
+
 POST localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "ela3@gmail.com",
-  "password": "12345a1231912"
+  "email": "nikola@gmail.com",
+  "password": "Nikola123#"
 }
+
+> {% client.global.set("auth-token", response.body.token); %}
 
 ###
 
@@ -122,29 +154,27 @@ Content-Type: application/json
 }
 
 #################### USERS
-
-
-
 GET localhost:8080/api/v1/admin/users
+Authorization: Bearer {{auth-token}}
 
 ###
 
 GET localhost:8080/api/v1/admin/users/{id}
+Authorization: Bearer {{auth-token}}
 
 ###
 
 GET localhost:8080/api/v1/admin/users/by-{email}
+Authorization: Bearer {{auth-token}}
 
 ###
 
 DELETE  localhost:8080/api/v1/admin/users/{id}
-
-
-
+Authorization: Bearer {{auth-token}}
 ###
 
-GET http://localhost:8080/api/v1/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGEzQGdtYWlsLmNvbSIsImlhdCI6MTcwNjE4MzE1OSwiZXhwIjoxNzA2MTg0NTk5fQ.h_rComWMuV_YKliTJWfzw_XONcZtLhpdrGQnvhC75pY
+GET http://localhost:8080/api/v1/admin/users
+Authorization: Bearer {{auth-token}}
 
 ###
 

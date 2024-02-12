@@ -81,15 +81,15 @@ public class RoleService {
     public void changeRoleToUser(UUID roleId, UUID userId, NewRoleDto updatedRoleDto) {
         UserClass user = findUserById(userId);
 
-        Role roleFromDb = roleRepository.findByName(updatedRoleDto.getName())
-                .orElseThrow(() -> getRoleNotFoundException(updatedRoleDto.getName()));
+        Role roleFromDb = roleRepository.findByName(updatedRoleDto.getName().toUpperCase())
+                .orElseThrow(() -> getRoleNotFoundException(updatedRoleDto.getName().toUpperCase()));
 
         Optional<Role> oldRoleUser = user.getRoles().stream()
                 .filter(currentRole -> currentRole.getId()
                         .equals(roleId)).findFirst();
 
         oldRoleUser.ifPresent(currentRole -> {
-            if (!currentRole.getName().equals(updatedRoleDto.getName())) {
+            if (!currentRole.getName().equals(updatedRoleDto.getName().toUpperCase())) {
                 user.clearAssignRole();
                 user.clearAssignRole();
                 user.addRole(roleFromDb);

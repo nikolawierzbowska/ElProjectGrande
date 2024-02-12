@@ -2,10 +2,7 @@ package pl.elgrandeproject.elgrande.registration;
 
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.elgrandeproject.elgrande.entities.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationResponse;
@@ -16,11 +13,11 @@ import pl.elgrandeproject.elgrande.security.jwt.RefreshTokenRequest;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 //    private ApplicationEventPublisher publisher;
 //    private VerificationTokenService tokenService;
-    private AuthenticationManager authenticationManager;
-    private JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     public AuthenticationController(AuthenticationService authenticationService, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationService = authenticationService;
@@ -42,7 +39,6 @@ public class AuthenticationController {
     public JwtAuthenticationResponse loginUser(@RequestBody LoginUser loginUser){
         return  authenticationService.login(loginUser);
     }
-
     @PostMapping("/refresh")
     public JwtAuthenticationResponse refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return  authenticationService.refreshToken(refreshTokenRequest);

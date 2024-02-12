@@ -42,7 +42,7 @@ public class SecurityConfiguration {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/error/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/error/**","/swagger-ui/**", "/v3/api-docs/**" ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions").permitAll()
 
                         .requestMatchers("/api/v1/admin/roles/**", "/error/**",

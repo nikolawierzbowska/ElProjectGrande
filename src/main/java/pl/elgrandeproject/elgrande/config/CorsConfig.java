@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande;
+package pl.elgrandeproject.elgrande.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

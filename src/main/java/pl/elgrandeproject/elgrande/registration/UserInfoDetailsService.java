@@ -9,7 +9,7 @@ import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 @Service
 public class UserInfoDetailsService  {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserInfoDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;

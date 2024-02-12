@@ -1,4 +1,4 @@
-package pl.elgrandeproject.elgrande;
+package pl.elgrandeproject.elgrande.config;
 
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
