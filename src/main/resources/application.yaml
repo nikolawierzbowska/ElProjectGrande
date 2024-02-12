@@ -8,11 +8,13 @@ spring:
     open-in-view: false
     database: postgresql
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate.format_sql: true
       hibernate.highlight_sql: true
+  flyway:
+    locations: db/migration/postgres
 server:
   error:
     include-message: always

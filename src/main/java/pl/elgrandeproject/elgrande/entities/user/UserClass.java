@@ -33,7 +33,7 @@ public class UserClass {
     @Column(unique = true)
     private String email;
     @NotBlank(message = "The field can not be empty.")
-    @Size(min = 5, message = "The password must be 10 characters minimum")
+    @Size(min = 8, message = "The password must be 8 characters minimum")
     private String password;
     @NotBlank(message = "The field can not be empty.")
     private String repeatedPassword;
@@ -43,13 +43,6 @@ public class UserClass {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-//    @OneToMany(
-//            fetch = FetchType.EAGER,
-//            mappedBy = "users",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true)
-//    private List<Opinion> opinions = new ArrayList<>();
 
     public UserClass(String firstName, String lastName, String email, String password, String repeatedPassword) {
         this.firstName = firstName;

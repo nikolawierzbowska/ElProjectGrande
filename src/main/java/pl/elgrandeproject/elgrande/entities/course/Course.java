@@ -28,7 +28,7 @@ public class Course {
 
     @NotBlank(message =  "The field can not be empty.")
     @NotNull
-    @Size(max = 35, message = "The name can not be longer than 35 characters")
+    @Size(max = 50, message = "The name can not be longer than 50 characters")
     private String name;
 
     @OneToMany(

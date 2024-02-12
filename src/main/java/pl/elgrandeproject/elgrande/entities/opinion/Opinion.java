@@ -24,7 +24,7 @@ public class Opinion {
     private UUID id = UUID.randomUUID();
 
     @NotBlank(message = "The field can not be empty.")
-    @Size(max = 120, message = "The opinion can not be longer than 120 characters")
+    @Size(max = 180, message = "The opinion can not be longer than 180 characters")
     private String description;
 
     private String userName;
