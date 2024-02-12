@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.elgrandeproject.elgrande.entities.opinion.Opinion;
-import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +38,11 @@ public class Course {
             orphanRemoval = true)
     private List<Opinion> opinions = new ArrayList<>();
 
-
     public Course(String name) {
         this.name = name;
     }
 
-
-    public void addOpinion(Opinion opinion, UserClass userClass){
-        opinion.setUser(userClass);
+    public void addOpinion(Opinion opinion){
         opinion.setCourses(this);
         opinions.add(opinion);
     }

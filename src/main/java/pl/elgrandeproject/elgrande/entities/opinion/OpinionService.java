@@ -19,11 +19,10 @@ import java.util.UUID;
 
 @Service
 public class OpinionService {
-
     private final OpinionRepository opinionRepository;
     private final OpinionMapper opinionMapper;
     private final CourseRepository courseRepository;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public OpinionService(OpinionRepository opinionRepository, OpinionMapper opinionMapper, CourseRepository courseRepository, UserRepository userRepository) {
         this.opinionRepository = opinionRepository;
@@ -48,7 +47,7 @@ public class OpinionService {
     public OpinionDto saveNewOpinion(UUID courseId, NewOpinionDto newOpinionDto) {
         Course course = courseRepository.findOneById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(
-                        "Kurs z takim ID: "+  courseId +"  nie został znaleziony"));
+                        "Kurs z takim ID: " + courseId + "  nie został znaleziony"));
 
         Opinion opinion = opinionMapper.mapNewOpinionDtoToEntity(newOpinionDto);
 
@@ -58,24 +57,18 @@ public class OpinionService {
         UserClass user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("not found this user"));
 
+       opinion.setUserName(user.getFirstName());
 
-
-        course.addOpinion(opinion, user);
-
-        opinion.addUser(user);
+        course.addOpinion(opinion);
         Opinion savedOpinion = opinionRepository.save(opinion);
-
 
         return opinionMapper.mapEntityToDto(savedOpinion);
     }
 
-
-    public void deleteOpinion(UUID courseId,UUID opinionId) {
-        Opinion opinion = opinionRepository.findOneById(courseId,opinionId)
+    public void deleteOpinion(UUID courseId, UUID opinionId) {
+        Opinion opinion = opinionRepository.findOneById(courseId, opinionId)
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
-
         opinionRepository.delete((opinion));
-
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {

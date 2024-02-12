@@ -8,10 +8,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.elgrandeproject.elgrande.entities.opinion.Opinion;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -20,7 +21,6 @@ import java.util.*;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserClass {
-
     @Id
     private UUID id = UUID.randomUUID();
     @NotBlank(message = "The field can not be empty.")
@@ -44,12 +44,12 @@ public class UserClass {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(
-            fetch = FetchType.EAGER,
-            mappedBy = "users",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private List<Opinion> opinions = new ArrayList<>();
+//    @OneToMany(
+//            fetch = FetchType.EAGER,
+//            mappedBy = "users",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    private List<Opinion> opinions = new ArrayList<>();
 
     public UserClass(String firstName, String lastName, String email, String password, String repeatedPassword) {
         this.firstName = firstName;

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.elgrandeproject.elgrande.entities.course.Course;
-import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.UUID;
 
@@ -28,22 +27,14 @@ public class Opinion {
     @Size(max = 120, message = "The opinion can not be longer than 120 characters")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private UserClass users;
+    private String userName;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Course courses;
 
-    public Opinion(String description) {
+    public Opinion(String description, String userName) {
         this.description = description;
-    }
-
-    public void addUser(UserClass user) {
-        this.users = user;
-    }
-
-    public void setUser(UserClass user) {
-        this.users = user;
+        this.userName =userName;
     }
 
 

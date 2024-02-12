@@ -41,7 +41,6 @@ public class CourseController {
     @DeleteMapping("/{courseId}")
     public void deleteCourseById(@PathVariable UUID courseId) {
         courseService.deleteCourseById(courseId);
-
     }
 
     @PatchMapping("/{courseId}")

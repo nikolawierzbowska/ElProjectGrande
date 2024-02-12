@@ -1,73 +1,64 @@
-package pl.elgrandeproject.elgrande.security;
+package pl.elgrandeproject.elgrande.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.elgrandeproject.elgrande.registration.UserInfoDetailsService;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationFilter;
+import pl.elgrandeproject.elgrande.security.jwt.JwtService;
 
 @Configuration
+@EnableMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserInfoDetailsService userInfoDetailsService;
+    private static final String[] URL_WHITELIST = {"/api/v1/admin/roles/**","/api/v1/auth/**", "/error/**", "/swagger-ui/**", "/v3/api-docs/**"};
+    private static final String[] URL_ADMIN = { "/error/**", "/api/v1/admin/courses/**",
+            "/api/v1/admin/users/**", "/api/v1/admin/courses/{courseId}/opinions", "/api/v1/courses/{courseId}/opinions/{opinionId}"};
+    private static final String[] URL_USER = {"/api/v1/user/**", "/api/v1/courses/{courseId}/opinions",
+            "/api/v1/courses/{courseId}/opinions/{opinionId}"};
 
-
-
-
-    public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, UserInfoDetailsService userInfoDetailsService) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.userInfoDetailsService = userInfoDetailsService;
-    }
+    public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint,
+                                           JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/error/**","/swagger-ui/**", "/v3/api-docs/**" ).permitAll()
+                        .requestMatchers(URL_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions").permitAll()
 
-                        .requestMatchers("/api/v1/admin/roles/**", "/error/**",
-                                "/api/v1/admin/courses/**",
-                                "/api/v1/admin/users/**",
-                                "/api/v1/admin/courses/{courseId}/opinions",
-                                "/api/v1/courses/{courseId}/opinions/{opinionId}").hasAnyRole("ADMIN")
+                        .requestMatchers(URL_ADMIN).hasAnyRole(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/courses/{courseId}/opinions/{opinionId}")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole(ADMIN)
 
-                        .requestMatchers("/api/v1/user/**",
-                                "/api/v1/courses/{courseId}/opinions",
-                                "/api/v1/courses/{courseId}/opinions/{opinionId}")
-                        .hasAnyRole("USER")
-                        .requestMatchers(HttpMethod.GET,"/api/v1/courses/{courseId}/opinions/{opinionId}").hasAnyRole("USER")
-
+                        .requestMatchers(URL_USER)
+                        .hasAnyRole(USER)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/courses/{courseId}/opinions/{opinionId}")
+                        .hasAnyRole(USER)
                         .anyRequest().authenticated())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
 
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint))
-//                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
@@ -80,11 +71,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userInfoDetailsService.userDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
     }
 
     @Bean
@@ -93,8 +81,13 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        return new JwtAuthenticationFilter(jwtService, userDetailsService);
+    }
+
+    @Bean
+    public JwtService jwtService() {
+        return new JwtService();
     }
 }
 

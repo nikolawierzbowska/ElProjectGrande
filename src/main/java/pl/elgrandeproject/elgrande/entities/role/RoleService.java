@@ -15,9 +15,9 @@ import java.util.UUID;
 
 @Service
 public class RoleService {
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
-    private RoleMapper roleMapper;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final RoleMapper roleMapper;
 
     public RoleService(RoleRepository roleRepository, UserRepository userRepository, RoleMapper roleMapper) {
         this.roleRepository = roleRepository;

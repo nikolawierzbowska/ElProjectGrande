@@ -38,18 +38,18 @@ Authorization: Bearer {{auth-token}}
 
 ##################ASSIGN ROLE TO USER
 
-PUT localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
-Authorization: Bearer {{auth-token}}
+PUT localhost:8080/api/v1/admin/roles/4af4444f-630a-4d82-8827-4e268292d6d7/users/65c8953f-8206-47ff-84bc-9fbdb73b8f79
+#Authorization: Bearer {{auth-token}}
 
 
 ################## COURSE
 
 POST localhost:8080/api/v1/admin/courses
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtvbGFAZ21haWwuY29tIiwiaWF0IjoxNzA3Mzg1MDc0LCJleHAiOjE3MDczODY1MTR9.viL2nFydv2pkl7K-9owYHwxD-DGs84Lgrh9IHkPLFvg
+Authorization: Bearer {{auth-token}}
 
 {
-  "name": "Mataaaaaaaaa"
+  "name": "Matura z matematyki Podstawowej"
 }
 
 > {%
@@ -88,13 +88,13 @@ Authorization: Bearer {{auth-token}}
 
 ###  OPINIONS
 
-POST localhost:8080/api/v1/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions
+POST localhost:8080/api/v1/courses/1da12639-4ce8-4c06-9f25-381071c85de2/opinions
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{auth-token}}
 
 {
 
-  "description": "Polecam kurs, maturzstom!!"
+  "description": "Kurs umożliwia mi śledzenie postępów i dostosowywanie tempa nauki."
 }
 
 > {%
@@ -103,7 +103,7 @@ Authorization: Bearer {{token}}
 
 
 ###
-GET localhost:8080/api/v1/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions
+GET localhost:8080/api/v1/courses/1da12639-4ce8-4c06-9f25-381071c85de2/opinions
 
 ###
 
@@ -112,7 +112,7 @@ GET localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
 
 ###
 
-DELETE localhost:8080/api/v1/admin/courses/{courseId}/opinions/{opinionId}
+DELETE localhost:8080/api/v1/admin/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions/373f452b-fa11-4a40-832c-bbdcb9938af5
 Authorization: Bearer {{auth-token}}
 
 ##################### USER - auth
@@ -121,11 +121,11 @@ POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 
 {
-  "firstName": "Ania",
-  "lastName": "Wilk",
-  "email": "ania@gmail.com",
-  "password": "Ania123#",
-  "repeatedPassword": "Ania123#"
+  "firstName": "Nikola",
+  "lastName": "Nowak",
+  "email": "Nikola@gmail.com",
+  "password": "Nikola123#",
+  "repeatedPassword": "Nikola123#"
 }
 > {%
     client.global.set("us-uuid", response.body.id)
@@ -138,8 +138,8 @@ POST localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "nikola@gmail.com",
-  "password": "Nikola123#"
+  "email": "Nikola@gmail.com",
+  "password":"Nikola123#"
 }
 
 > {% client.global.set("auth-token", response.body.token); %}
@@ -169,7 +169,7 @@ Authorization: Bearer {{auth-token}}
 
 ###
 
-DELETE  localhost:8080/api/v1/admin/users/{id}
+DELETE  localhost:8080/api/v1/admin/users/8b14d3dd-f48d-4cf0-8911-f0f2492ec816
 Authorization: Bearer {{auth-token}}
 ###
 

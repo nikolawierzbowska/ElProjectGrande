@@ -35,9 +35,8 @@ public class CourseService {
     }
 
     public CourseDto getCourseByName(String courseName) {
-
-      if(courseRepository.findOneByName(courseName.toUpperCase())
-                .map(entity -> courseMapper.mapEntityToDto(entity)).isEmpty()){
+        if (courseRepository.findOneByName(courseName.toUpperCase())
+                .map(entity -> courseMapper.mapEntityToDto(entity)).isEmpty()) {
             return null;
         }
         return courseRepository.findOneByName(courseName.toUpperCase())
@@ -45,34 +44,31 @@ public class CourseService {
     }
 
 
-
     public CourseDto saveNewCourse(NewCourseDto newCourseDto) throws LengthOfNewNameCourseException {
-       if(newCourseDto.getName().length()> 35) {
-           throw new LengthOfNewNameCourseException("Max. tytuł 35 znaków");
-       }else {
-           String upperCaseName = newCourseDto.getName().toUpperCase();
-           if (getCourseByName(upperCaseName) == null) {
-               newCourseDto.setName(upperCaseName);
-               Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
-               return courseMapper.mapEntityToDto(courseSaved);
-           } else {
+        if (newCourseDto.getName().length() > 35) {
+            throw new LengthOfNewNameCourseException("Max. tytuł 35 znaków");
+        } else {
+            String upperCaseName = newCourseDto.getName().toUpperCase();
+            if (getCourseByName(upperCaseName) == null) {
+                newCourseDto.setName(upperCaseName);
+                Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
+                return courseMapper.mapEntityToDto(courseSaved);
+            } else {
 
-               throw new CourseFoundException("Istnieje już taka nazwa kursu: " + newCourseDto.getName());
-           }
-       }
-
+                throw new CourseFoundException("Istnieje już taka nazwa kursu: " + newCourseDto.getName());
+            }
+        }
     }
 
     public void deleteCourseById(UUID courseId) {
         Course course = courseRepository.findOneById(courseId)
                 .orElseThrow(() -> getCourseNotFoundException(courseId));
-
-       courseRepository.delete(course);
+        courseRepository.delete(course);
     }
 
     public void updateCourseId(UUID courseId, NewCourseDto updateCourseDto) {
         LengthOfUpdateNameCourseException lengthException = lengthOfUpdateNameCourseException(updateCourseDto, 35);
-        if(lengthException !=null){
+        if (lengthException != null) {
             throw lengthException;
         }
 
@@ -81,14 +77,12 @@ public class CourseService {
         updateCourseDto.setName(updateCourseDto.getName().toUpperCase());
         Course updatedCourse = courseMapper.mapNewCourseDtoToEntity(updateCourseDto);
         String upperCaseName = updatedCourse.getName();
-        if(getCourseByName(upperCaseName) == null){
+        if (getCourseByName(upperCaseName) == null) {
             course.setName(upperCaseName);
             courseRepository.save(course);
-
-        }else{
+        } else {
             throw new CourseFoundException("Istnieje już taka nazwa kursu: " + updateCourseDto.getName().toUpperCase());
         }
-
     }
 
     public CourseNotFoundException getCourseNotFoundException(UUID courseId) {
@@ -97,14 +91,9 @@ public class CourseService {
 
 
     public LengthOfUpdateNameCourseException lengthOfUpdateNameCourseException(NewCourseDto newCourseDto, int length) {
-        if( newCourseDto.getName().length() >length){
+        if (newCourseDto.getName().length() > length) {
             return new LengthOfUpdateNameCourseException("Max. tytuł 35 znaków");
         }
         return null;
     }
-
-
-
-
-
 }

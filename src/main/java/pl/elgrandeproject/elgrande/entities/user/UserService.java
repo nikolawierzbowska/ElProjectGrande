@@ -1,6 +1,7 @@
 package pl.elgrandeproject.elgrande.entities.user;
 
 import org.springframework.stereotype.Service;
+import pl.elgrandeproject.elgrande.entities.opinion.OpinionRepository;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 
@@ -10,14 +11,15 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final OpinionRepository opinionRepository;
 
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, OpinionRepository opinionRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-
+        this.opinionRepository = opinionRepository;
     }
 
     public List<UserDto> getUsers() {
@@ -41,7 +43,6 @@ public class UserService {
     public void softDeleteUser(UUID userId) {
         UserClass user = userRepository.findOneById(userId)
                 .orElseThrow(() -> getUserNotFoundException(userId));
-
         clearSoftData(user);
         user.clearAssignRole();
 
@@ -67,11 +68,11 @@ public class UserService {
     }
 
     private UserNotFoundException getUserNotFoundException(String email) {
-        return new UserNotFoundException("User with this email " + email + " not exist");
+        return new UserNotFoundException("User z tym email " + email + " nie istnieje");
     }
 
     private UserNotFoundException getUserNotFoundException(UUID userId) {
-        return new UserNotFoundException("User with this " + userId + "  not exist");
+        return new UserNotFoundException("User z tym email " + userId + " istnieje");
     }
 
 }
