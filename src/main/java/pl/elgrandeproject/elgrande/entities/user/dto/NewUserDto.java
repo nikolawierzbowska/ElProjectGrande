@@ -24,5 +24,4 @@ public class NewUserDto {
         @NotBlank(message = "The field can not be empty.")
         String repeatedPassword;
 
-
 }

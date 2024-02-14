@@ -10,9 +10,9 @@ public record UserDto(
          String email,
          String password,
          String repeatedPassword,
-         List<UserRole> uerRoles
+         List<userRole> userRoles
 ) {
-    public  record UserRole(
+    public  record userRole(
             UUID id,
             String name
     ){

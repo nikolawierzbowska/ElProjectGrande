@@ -91,7 +91,6 @@ public class RoleService {
         oldRoleUser.ifPresent(currentRole -> {
             if (!currentRole.getName().equals(updatedRoleDto.getName().toUpperCase())) {
                 user.clearAssignRole();
-                user.clearAssignRole();
                 user.addRole(roleFromDb);
                 (roleFromDb).assignUser(user);
                 userRepository.save(user);

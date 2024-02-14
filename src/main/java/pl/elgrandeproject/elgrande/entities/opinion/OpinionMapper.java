@@ -8,11 +8,12 @@ import pl.elgrandeproject.elgrande.entities.opinion.dto.OpinionDto;
 public class OpinionMapper {
 
     public Opinion mapNewOpinionDtoToEntity(NewOpinionDto newOpinionDto) {
-        return new Opinion(newOpinionDto.description(), newOpinionDto.UserName());
+        return new Opinion(newOpinionDto.description(), newOpinionDto.userName());
     }
 
     public OpinionDto mapEntityToDto(Opinion opinion){
         return new OpinionDto(opinion.getId(), opinion.getDescription(), opinion.getUserName());
     }
+
 
 }

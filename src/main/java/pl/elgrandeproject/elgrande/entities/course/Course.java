@@ -38,7 +38,7 @@ public class Course {
             orphanRemoval = true)
     private List<Opinion> opinions = new ArrayList<>();
 
-    public Course(String name) {
+    public Course(@NotNull String name) {
         this.name = name;
     }
 

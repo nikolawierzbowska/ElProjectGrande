@@ -25,7 +25,7 @@ public class CourseController {
 
     @GetMapping("/id/{courseId}")
     public CourseDto getCourseById(@PathVariable UUID courseId) {
-        return courseService.getCourseById(courseId);
+        return courseService.getCourseDtoById(courseId);
     }
 
     @GetMapping("/{courseName}")
@@ -45,7 +45,7 @@ public class CourseController {
 
     @PatchMapping("/{courseId}")
     public void updateCourseById(@Valid @PathVariable UUID courseId, @RequestBody  NewCourseDto updateCourseDto){
-        courseService.updateCourseId(courseId, updateCourseDto);
+        courseService.updateCourse(courseId, updateCourseDto);
     }
 
 }

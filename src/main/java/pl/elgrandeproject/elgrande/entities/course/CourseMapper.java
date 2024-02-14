@@ -18,7 +18,7 @@ public class CourseMapper {
 
     }
 
-    public List<CourseDto.OpinionsToCourse> mapOpinions(Course course){
+    private List<CourseDto.OpinionsToCourse> mapOpinions(Course course){
         return course.getOpinions().stream()
                 .map(op -> new CourseDto.OpinionsToCourse(op.getId(), op.getDescription()))
                 .toList();

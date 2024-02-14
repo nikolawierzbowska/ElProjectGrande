@@ -32,7 +32,7 @@ public class Role {
         this.name = name;
     }
 
-    public void  assignUser(UserClass user){
+    public void assignUser(UserClass user){
         users.add(user);
     }
 }
