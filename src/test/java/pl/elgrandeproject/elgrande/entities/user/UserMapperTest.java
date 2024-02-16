@@ -36,8 +36,8 @@ class UserMapperTest {
         Assertions.assertThat(actual.repeatedPassword()).isEqualTo("test-rPassword");
         Assertions.assertThat(actual.userRoles()).isNotNull();
         Assertions.assertThat(actual.userRoles()).containsExactlyInAnyOrder(
-                new UserDto.userRole(role1.getId(),"test-nameRole1"),
-                new UserDto.userRole(role2.getId(),"test-nameRole2")
+                new UserDto.UserRole(role1.getId(),"test-nameRole1"),
+                new UserDto.UserRole(role2.getId(),"test-nameRole2")
         );
 
 
