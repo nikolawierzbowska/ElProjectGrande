@@ -1,21 +1,20 @@
 package pl.elgrandeproject.elgrande.entities.opinion;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.course.Course;
 import pl.elgrandeproject.elgrande.entities.course.CourseRepository;
-import pl.elgrandeproject.elgrande.entities.course.exception.CourseNotFoundException;
 import pl.elgrandeproject.elgrande.entities.opinion.dto.NewOpinionDto;
 import pl.elgrandeproject.elgrande.entities.opinion.dto.OpinionDto;
 import pl.elgrandeproject.elgrande.entities.opinion.exception.OpinionNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
-import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
+import pl.elgrandeproject.elgrande.registration.Principal;
 
 import java.util.List;
 import java.util.UUID;
+
+import static pl.elgrandeproject.elgrande.entities.course.CourseService.getCourseNotFoundException;
+import static pl.elgrandeproject.elgrande.entities.user.UserService.getUserWithThisEmailNotFoundException;
 
 @Service
 public class OpinionService {
@@ -24,7 +23,8 @@ public class OpinionService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
-    public OpinionService(OpinionRepository opinionRepository, OpinionMapper opinionMapper, CourseRepository courseRepository, UserRepository userRepository) {
+    public OpinionService(OpinionRepository opinionRepository, OpinionMapper opinionMapper,
+                          CourseRepository courseRepository, UserRepository userRepository) {
         this.opinionRepository = opinionRepository;
         this.opinionMapper = opinionMapper;
         this.courseRepository = courseRepository;
@@ -37,31 +37,24 @@ public class OpinionService {
                 .toList();
     }
 
-    public OpinionDto getOpinionById(UUID courseId, UUID opinionId) {
+    public OpinionDto getOpinionDtoById(UUID courseId, UUID opinionId) {
         return opinionRepository.findOneById(courseId, opinionId)
                 .map(opinion -> opinionMapper.mapEntityToDto(opinion))
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
     }
 
-
-    public OpinionDto saveNewOpinion(UUID courseId, NewOpinionDto newOpinionDto) {
+    public OpinionDto saveNewOpinion(UUID courseId, NewOpinionDto newOpinionDto, Principal principal) {
         Course course = courseRepository.findOneById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(
-                        "Kurs z takim ID: " + courseId + "  nie został znaleziony"));
+                .orElseThrow(() -> getCourseNotFoundException(courseId));
 
         Opinion opinion = opinionMapper.mapNewOpinionDtoToEntity(newOpinionDto);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserClass user = userRepository.findByEmail(principal.userDetails().getUsername())
+                .orElseThrow(() -> getUserWithThisEmailNotFoundException(principal.userDetails().getUsername()));
 
-        UserClass user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("not found this user"));
-
-       opinion.setUserName(user.getFirstName());
-
+        opinion.setUserName(user.getFirstName());
         course.addOpinion(opinion);
         Opinion savedOpinion = opinionRepository.save(opinion);
-
         return opinionMapper.mapEntityToDto(savedOpinion);
     }
 
@@ -72,6 +65,6 @@ public class OpinionService {
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {
-        return new OpinionNotFoundException("not found this opinion " + id);
+        return new OpinionNotFoundException("Nie znaleziono opini o takim id: " + id);
     }
 }

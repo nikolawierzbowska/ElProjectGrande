@@ -42,7 +42,7 @@ public class RoleController {
         roleService.assignRoleToUser(roleId, userId);
     }
 
-    @PatchMapping("/{roleId}/users/{userId}")
+    @PatchMapping("{roleId}/users/{userId}")
     public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@RequestBody NewRoleDto updatedRoleDto) {
         roleService.changeRoleToUser(roleId, userId, updatedRoleDto);
     }

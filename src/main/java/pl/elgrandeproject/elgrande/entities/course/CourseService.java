@@ -5,14 +5,12 @@ import pl.elgrandeproject.elgrande.entities.course.dto.CourseDto;
 import pl.elgrandeproject.elgrande.entities.course.dto.NewCourseDto;
 import pl.elgrandeproject.elgrande.entities.course.exception.CourseFoundException;
 import pl.elgrandeproject.elgrande.entities.course.exception.CourseNotFoundException;
-import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfNewNameCourseException;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class CourseService {
-
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
@@ -38,27 +36,24 @@ public class CourseService {
                 .orElseThrow(() -> getCourseNotFoundException(courseId));
     }
 
-    public CourseDto getCourseByName(String courseName) {
+    public CourseDto getCourseDtoByName(String courseName) {
         return courseRepository.findOneByName(courseName.toUpperCase())
                 .map(entity -> courseMapper.mapEntityToDto(entity))
-                .orElse(null);
-//                .orElseThrow(() -> getCourseNotFoundException(courseName));
+                .orElseThrow(() -> getCourseNotFoundException(courseName));
     }
 
+    public boolean ifPresentCourseWithThisName(NewCourseDto newCourseDto) {
+        return courseRepository.findOneByName(newCourseDto.getName().toUpperCase())
+                .isPresent();
+    }
 
-    public CourseDto saveNewCourse(NewCourseDto newCourseDto)  {
-       int length = 50;
-        if (newCourseDto.getName().length() > length) {
-            throw lengthNameCourseException(newCourseDto, length);
+    public CourseDto saveNewCourse(NewCourseDto newCourseDto) {
+        if (!ifPresentCourseWithThisName(newCourseDto)) {
+            newCourseDto.setName(newCourseDto.getName().toUpperCase());
+            Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
+            return courseMapper.mapEntityToDto(courseSaved);
         } else {
-            String upperCaseName = newCourseDto.getName().toUpperCase();
-            if (getCourseByName(upperCaseName) == null) {
-                newCourseDto.setName(upperCaseName);
-                Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
-                return courseMapper.mapEntityToDto(courseSaved);
-            } else {
-                throw new CourseFoundException("Istnieje już taka nazwa kursu: " + newCourseDto.getName());
-            }
+            throw new CourseFoundException("Istnieje już taka nazwa kursu: " + newCourseDto.getName());
         }
     }
 
@@ -68,37 +63,24 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-
-
     public void updateCourse(UUID courseId, NewCourseDto updateCourseDto) {
-        LengthOfNewNameCourseException lengthException = lengthNameCourseException(updateCourseDto, 50);
-        if(lengthException ==null) {
-            Course course = getCourseById(courseId);
-            updateCourseDto.setName(updateCourseDto.getName().toUpperCase());
-            Course updatedCourse = courseMapper.mapNewCourseDtoToEntity(updateCourseDto);
+        Course course = getCourseById(courseId);
+        updateCourseDto.setName(updateCourseDto.getName().toUpperCase());
+        Course updatedCourse = courseMapper.mapNewCourseDtoToEntity(updateCourseDto);
 
-            if (getCourseByName(updatedCourse.getName()) == null) {
-                course.setName(updatedCourse.getName());
-                courseRepository.save(course);
-            } else {
-                throw new CourseFoundException("Istnieje już taka nazwa kursu: " + updateCourseDto.getName().toUpperCase());
-            }
+        if (!ifPresentCourseWithThisName(updateCourseDto)) {
+            course.setName(updatedCourse.getName());
+            courseRepository.save(course);
+        } else {
+            throw new CourseFoundException("Istnieje już taka nazwa kursu: " + updateCourseDto.getName().toUpperCase());
         }
     }
 
-    public CourseNotFoundException getCourseNotFoundException(UUID courseId) {
+    public static CourseNotFoundException getCourseNotFoundException(UUID courseId) {
         return new CourseNotFoundException("Kurs z takim ID " + courseId + " nie został znaleziony");
     }
 
     public CourseNotFoundException getCourseNotFoundException(String name) {
         return new CourseNotFoundException("Kurs z taką nazwą: " + name + " nie został znaleziony");
-    }
-
-
-    public LengthOfNewNameCourseException lengthNameCourseException(NewCourseDto newCourseDto, int length) {
-        if (newCourseDto.getName().length() > length) {
-            throw new LengthOfNewNameCourseException("Max. tytuł 50 znaków");
-        }
-        return null;
     }
 }

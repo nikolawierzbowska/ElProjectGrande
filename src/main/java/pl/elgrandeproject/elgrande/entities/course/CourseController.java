@@ -30,7 +30,7 @@ public class CourseController {
 
     @GetMapping("/{courseName}")
     public CourseDto getCourseById(@PathVariable String courseName) {
-        return courseService.getCourseByName(courseName);
+        return courseService.getCourseDtoByName(courseName);
     }
 
     @PostMapping

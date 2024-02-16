@@ -37,7 +37,7 @@ public class UserService {
     public UserDto getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(entity -> userMapper.mapEntityToDto(entity))
-                .orElseThrow(() -> getUserNotFoundException(email));
+                .orElseThrow(() -> getUserWithThisEmailNotFoundException(email));
     }
 
     public void softDeleteUser(UUID userId) {
@@ -45,7 +45,6 @@ public class UserService {
                 .orElseThrow(() -> getUserNotFoundException(userId));
         clearSoftData(user);
         user.clearAssignRole();
-
         userRepository.save(user);
     }
 
@@ -67,12 +66,11 @@ public class UserService {
         user.setRepeatedPassword("*".repeat(repeatedPasswordLength));
     }
 
-    private UserNotFoundException getUserNotFoundException(String email) {
+    public static UserNotFoundException getUserWithThisEmailNotFoundException(String email) {
         return new UserNotFoundException("User z tym email " + email + " nie istnieje");
     }
 
-    private UserNotFoundException getUserNotFoundException(UUID userId) {
-        return new UserNotFoundException("User z tym email " + userId + " istnieje");
+    public static UserNotFoundException getUserNotFoundException(UUID userId) {
+        return new UserNotFoundException("User z tym id: " + userId + " nie  istnieje");
     }
-
 }

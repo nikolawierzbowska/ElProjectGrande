@@ -22,9 +22,9 @@ public class UserMapper {
         );
     }
 
-    public List<UserDto.userRole> mapRoleToDto(UserClass user){
+    public List<UserDto.UserRole> mapRoleToDto(UserClass user){
         return  user.getRoles().stream()
-                .map(role -> new UserDto.userRole(role.getId(), role.getName()))
+                .map(role -> new UserDto.UserRole(role.getId(), role.getName()))
                 .toList();
     }
 }

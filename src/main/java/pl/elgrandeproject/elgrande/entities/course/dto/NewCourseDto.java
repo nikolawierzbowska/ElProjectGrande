@@ -12,7 +12,7 @@ import lombok.Setter;
 public class NewCourseDto {
 
         @NotNull
-        @Size(max = 50, message = "The name can not be longer than 35 characters")
+        @Size(max = 50, message = "Nazwa kursu nie może być dłuższa niż 50 znaków.")
         String name;
 
         public NewCourseDto(@NotNull String name) {

@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.elgrandeproject.elgrande.config.SecurityConfiguration;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 import pl.elgrandeproject.elgrande.entities.role.RoleRepository;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
@@ -50,7 +51,7 @@ public class AuthenticationService {
             user.setRepeatedPassword(passwordEncoder.encode((newUserDto.getRepeatedPassword())));
 
 
-            Role role = roleRepository.findByName("USER").orElseThrow(
+            Role role = roleRepository.findByName(SecurityConfiguration.USER).orElseThrow(
                     () -> new RuntimeException("not exist this role"));
             user.addRole(role);
             role.assignUser(user);

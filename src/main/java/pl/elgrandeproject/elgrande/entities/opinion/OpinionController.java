@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.elgrandeproject.elgrande.entities.opinion.dto.NewOpinionDto;
 import pl.elgrandeproject.elgrande.entities.opinion.dto.OpinionDto;
 
+import pl.elgrandeproject.elgrande.registration.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,14 +26,12 @@ public class OpinionController {
 
     @GetMapping("courses/{courseId}/opinions/{opinionId}")
     public OpinionDto getOpinionById(@PathVariable UUID courseId, @PathVariable UUID opinionId) {
-        return opinionService.getOpinionById(courseId, opinionId);
-
+        return opinionService.getOpinionDtoById(courseId, opinionId);
     }
 
     @PostMapping("courses/{courseId}/opinions")
-    public OpinionDto createNewOpinion(@PathVariable UUID courseId, @Valid @RequestBody NewOpinionDto newOpinionDto){
-
-        return opinionService.saveNewOpinion(courseId, newOpinionDto);
+    public OpinionDto createNewOpinion(@PathVariable UUID courseId, @Valid @RequestBody NewOpinionDto newOpinionDto, Principal principal){
+        return opinionService.saveNewOpinion(courseId, newOpinionDto, principal);
     }
 
     @DeleteMapping("admin/courses/{courseId}/opinions/{opinionId}")

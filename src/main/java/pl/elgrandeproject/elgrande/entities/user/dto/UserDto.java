@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.UUID;
 
 public record UserDto(
-         UUID id,
-         String firstName,
-         String lastName,
-         String email,
-         String password,
-         String repeatedPassword,
-         List<userRole> userRoles
+        UUID id,
+        String firstName,
+        String lastName,
+        String email,
+        String password,
+        String repeatedPassword,
+        List<UserRole> userRoles
 ) {
-    public  record userRole(
+    public record UserRole(
             UUID id,
             String name
-    ){
+    ) {
 
     }
 }
