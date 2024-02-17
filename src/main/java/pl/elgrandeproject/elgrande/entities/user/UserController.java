@@ -12,7 +12,6 @@ public class UserController {
 
     private UserService userService;
 
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -36,7 +35,4 @@ public class UserController {
     public void softDeleteUser(@PathVariable UUID userId ){
         userService.softDeleteUser(userId);
     }
-
-
-
 }

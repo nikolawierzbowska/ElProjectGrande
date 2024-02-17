@@ -1,7 +1,6 @@
 package pl.elgrandeproject.elgrande.entities.user;
 
 import org.springframework.stereotype.Service;
-import pl.elgrandeproject.elgrande.entities.opinion.OpinionRepository;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 
@@ -13,13 +12,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final OpinionRepository opinionRepository;
 
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, OpinionRepository opinionRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.opinionRepository = opinionRepository;
     }
 
     public List<UserDto> getUsers() {
