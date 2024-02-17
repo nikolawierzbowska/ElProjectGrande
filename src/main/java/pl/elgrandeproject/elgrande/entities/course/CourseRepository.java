@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CourseRepository  extends JpaRepository<Course, UUID> {
+public interface CourseRepository extends JpaRepository<Course, UUID> {
     List<Course> findAll();
 
     @Query("SELECT c FROM Course c LEFT  JOIN  FETCH  c.opinions WHERE c.id = :id ")
@@ -17,9 +17,4 @@ public interface CourseRepository  extends JpaRepository<Course, UUID> {
 
     @Query("SELECT c FROM Course c LEFT  JOIN  FETCH  c.opinions WHERE c.name = :courseName ")
     Optional<Course> findOneByName(String courseName);
-
-
-
-
-
 }
