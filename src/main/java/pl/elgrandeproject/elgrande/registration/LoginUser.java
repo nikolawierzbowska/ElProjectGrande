@@ -1,10 +1,9 @@
 package pl.elgrandeproject.elgrande.registration;
 
-import lombok.Data;
+public record LoginUser(
 
-@Data
-public class LoginUser {
+        String email,
+        String password
+) {
 
-    private String email;
-    private String password;
 }

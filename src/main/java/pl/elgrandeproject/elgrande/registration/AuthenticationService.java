@@ -2,7 +2,6 @@ package pl.elgrandeproject.elgrande.registration;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.config.SecurityConfiguration;
@@ -50,7 +49,6 @@ public class AuthenticationService {
             user.setPassword(passwordEncoder.encode((newUserDto.getPassword())));
             user.setRepeatedPassword(passwordEncoder.encode((newUserDto.getRepeatedPassword())));
 
-
             Role role = roleRepository.findByName(SecurityConfiguration.USER).orElseThrow(
                     () -> new RuntimeException("not exist this role"));
             user.addRole(role);
@@ -60,24 +58,17 @@ public class AuthenticationService {
             UserDto userDto = userMapper.mapEntityToDto(savedUser);
             return userDto;
         }
-
         throw new PasswordsNotMatchException("Passwords do not match! ");
-
     }
 
     public JwtAuthenticationResponse login(LoginUser loginUser) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUser.getEmail(),
-                loginUser.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginUser.email(),
+                        loginUser.password()));
 
 
-        UserClass userClass = userRepository.findByEmail(loginUser.getEmail())
-                .orElseThrow(() -> getUserNotFoundException());
-        UserDetails user = new UserInfoDetails(userClass);
-
-
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        var jwt = jwtService.generateToken(loginUser.email());
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), loginUser.email());
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
 
@@ -86,15 +77,13 @@ public class AuthenticationService {
         return jwtAuthenticationResponse;
     }
 
-
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
-        String email  = jwtService.extractUserName(refreshTokenRequest.getToken());
-        UserClass userClass = userRepository.findByEmail(email)
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        String email = jwtService.extractUserName(refreshTokenRequest.getToken());
+        userRepository.findByEmail(email)
                 .orElseThrow(() -> getUserNotFoundException());
-        UserDetails user = new UserInfoDetails(userClass);
 
-        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.generateToken(user);
+        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), email)) {
+            var jwt = jwtService.generateToken(email);
 
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
 
@@ -102,7 +91,7 @@ public class AuthenticationService {
             jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
             return jwtAuthenticationResponse;
         }
-        return  null;
+        return null;
     }
 
     private UserNotFoundException getUserNotFoundException() {

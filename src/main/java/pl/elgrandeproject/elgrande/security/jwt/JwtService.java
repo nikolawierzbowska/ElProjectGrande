@@ -3,9 +3,8 @@ package pl.elgrandeproject.elgrande.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
+import pl.elgrandeproject.elgrande.config.AuthConfigProperties;
 
 import java.security.Key;
 import java.util.Date;
@@ -15,18 +14,24 @@ import java.util.function.Function;
 
 public class JwtService {
 
-    public String generateToken(UserDetails userDetails) {
+    private final AuthConfigProperties authProperties;
+
+    public JwtService(AuthConfigProperties authProperties) {
+        this.authProperties = authProperties;
+    }
+
+    public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(Map<String,Object> extraClaims, UserDetails userDetails) {
+    public String generateRefreshToken(Map<String,Object> extraClaims, String username) {
         return Jwts.builder().setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 60480000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -43,9 +48,9 @@ public class JwtService {
         return claimResolver.apply(claims);
     }
 
-    public  Boolean isTokenValid(String token, UserDetails userDetails){
+    public  Boolean isTokenValid(String token, String username){
         final String userEmail = extractUserName(token);
-        return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return userEmail.equals(username) && !isTokenExpired(token);
     }
 
     public Date extractExpiration(String token ){
@@ -61,8 +66,7 @@ public class JwtService {
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("413F4428472B4B6413F4428472B4B6413F4428472B4B6413F4428472B4B6");
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor((authProperties.secret().getBytes()));
     }
 
     private Boolean isTokenExpired(String token) {
