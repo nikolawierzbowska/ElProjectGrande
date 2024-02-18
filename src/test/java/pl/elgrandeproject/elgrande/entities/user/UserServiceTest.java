@@ -9,7 +9,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.elgrandeproject.elgrande.entities.opinion.OpinionRepository;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
@@ -22,8 +21,8 @@ import java.util.UUID;
 class UserServiceTest {
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
     private final UserMapper userMapper = Mockito.mock(UserMapper.class);
-    private final OpinionRepository opinionRepository = Mockito.mock(OpinionRepository.class);
-    private final UserService testUserService = new UserService(userRepository, userMapper, opinionRepository);
+
+    private final UserService testUserService = new UserService(userRepository, userMapper);
 
     @Test
     void shouldReturnAllUsersDto() {

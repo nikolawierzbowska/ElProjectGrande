@@ -37,7 +37,7 @@ public class AuthenticationController {
     }
     @PostMapping("/login")
     public JwtAuthenticationResponse loginUser(@RequestBody LoginUser loginUser){
-        return  authenticationService.login(loginUser);
+        return authenticationService.login(loginUser);
     }
     @PostMapping("/refresh")
     public JwtAuthenticationResponse refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
