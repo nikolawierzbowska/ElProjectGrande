@@ -19,3 +19,9 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+app:
+  security:
+    jwt:
+      token:
+        secret: 413F4428472B4B6413F4428472B4B6413F4428472B4B6413F4428472B4B6
+
