@@ -3,7 +3,6 @@ package pl.elgrandeproject.elgrande.entities.course;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.course.dto.CourseDto;
 import pl.elgrandeproject.elgrande.entities.course.dto.NewCourseDto;
-import pl.elgrandeproject.elgrande.entities.course.exception.CourseFoundException;
 import pl.elgrandeproject.elgrande.entities.course.exception.CourseNotFoundException;
 
 import java.util.List;
@@ -42,19 +41,11 @@ public class CourseService {
                 .orElseThrow(() -> getCourseNotFoundException(courseName));
     }
 
-    public boolean ifPresentCourseWithThisName(NewCourseDto newCourseDto) {
-        return courseRepository.findOneByName(newCourseDto.getName().toUpperCase())
-                .isPresent();
-    }
-
     public CourseDto saveNewCourse(NewCourseDto newCourseDto) {
-        if (!ifPresentCourseWithThisName(newCourseDto)) {
-            newCourseDto.setName(newCourseDto.getName().toUpperCase());
-            Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
-            return courseMapper.mapEntityToDto(courseSaved);
-        } else {
-            throw new CourseFoundException("Istnieje już taka nazwa kursu: " + newCourseDto.getName());
-        }
+        newCourseDto.setName(newCourseDto.getName().toUpperCase());
+        Course courseSaved = courseRepository.save(courseMapper.mapNewCourseDtoToEntity(newCourseDto));
+        return courseMapper.mapEntityToDto(courseSaved);
+
     }
 
     public void deleteCourseById(UUID courseId) {
@@ -67,13 +58,8 @@ public class CourseService {
         Course course = getCourseById(courseId);
         updateCourseDto.setName(updateCourseDto.getName().toUpperCase());
         Course updatedCourse = courseMapper.mapNewCourseDtoToEntity(updateCourseDto);
-
-        if (!ifPresentCourseWithThisName(updateCourseDto)) {
-            course.setName(updatedCourse.getName());
-            courseRepository.save(course);
-        } else {
-            throw new CourseFoundException("Istnieje już taka nazwa kursu: " + updateCourseDto.getName().toUpperCase());
-        }
+        course.setName(updatedCourse.getName());
+        courseRepository.save(course);
     }
 
     public static CourseNotFoundException getCourseNotFoundException(UUID courseId) {

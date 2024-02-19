@@ -13,7 +13,6 @@ import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 import pl.elgrandeproject.elgrande.entities.user.dto.NewUserDto;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
-import pl.elgrandeproject.elgrande.registration.exception.PasswordsNotMatchException;
 import pl.elgrandeproject.elgrande.security.jwt.JwtAuthenticationResponse;
 import pl.elgrandeproject.elgrande.security.jwt.JwtService;
 import pl.elgrandeproject.elgrande.security.jwt.RefreshTokenRequest;
@@ -41,8 +40,6 @@ public class AuthenticationService {
 
     public UserDto registerUser(NewUserDto newUserDto) {
         UserClass user = new UserClass();
-
-        if (newUserDto.getPassword().equals(newUserDto.getRepeatedPassword())) {
             user.setFirstName(newUserDto.getFirstName());
             user.setLastName(newUserDto.getLastName());
             user.setEmail(newUserDto.getEmail());
@@ -50,15 +47,14 @@ public class AuthenticationService {
             user.setRepeatedPassword(passwordEncoder.encode((newUserDto.getRepeatedPassword())));
 
             Role role = roleRepository.findByName(SecurityConfiguration.USER).orElseThrow(
-                    () -> new RuntimeException("not exist this role"));
+                    () -> new RuntimeException("Nie istnieje taka rola"));
             user.addRole(role);
             role.assignUser(user);
 
             UserClass savedUser = userRepository.save(user);
-            UserDto userDto = userMapper.mapEntityToDto(savedUser);
-            return userDto;
-        }
-        throw new PasswordsNotMatchException("Passwords do not match! ");
+
+        return userMapper.mapEntityToDto(savedUser);
+
     }
 
     public JwtAuthenticationResponse login(LoginUser loginUser) {

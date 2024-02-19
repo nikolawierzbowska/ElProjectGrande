@@ -3,7 +3,6 @@ package pl.elgrandeproject.elgrande.entities.role;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
-import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -44,19 +43,11 @@ public class RoleService {
                 .orElseThrow(() -> getRoleWithThisNameNotFoundException(name));
     }
 
-    public boolean ifPresentRoleWithThisName(NewRoleDto newRoleDto) {
-        return roleRepository.findByName(newRoleDto.getName().toUpperCase())
-                .isPresent();
-    }
-
     public RoleDto saveNewRole(NewRoleDto newRoleDto) {
         String upperCaseName = newRoleDto.getName().toUpperCase();
-        if (!ifPresentRoleWithThisName(newRoleDto)) {
-            newRoleDto.setName(upperCaseName);
-            Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
-            return roleMapper.mapEntityToDto(savedRole);
-        }
-        throw new RoleFoundException("Taka nazwa : " + newRoleDto.getName() + " już istnieje !");
+        newRoleDto.setName(upperCaseName);
+        Role savedRole = roleRepository.save(roleMapper.mapNewRoleDtoToEntity(newRoleDto));
+        return roleMapper.mapEntityToDto(savedRole);
     }
 
     public Role findRoleById(UUID roleId) {
@@ -91,14 +82,11 @@ public class RoleService {
                 .filter(currentRole -> currentRole.getId()
                         .equals(oldRoleId)).findFirst();
 
-        if (ifPresentRoleWithThisName((updatedRoleDto)) && oldRoleUserToChange.isPresent()) {
+        if (oldRoleUserToChange.isPresent()) {
             user.clearAssignRole();
             user.addRole(findRoleByName(updatedRoleDto));
             findRoleByName(updatedRoleDto).assignUser(user);
             userRepository.save(user);
-        } else {
-
-            throw new RuntimeException("nie zgdza się");
         }
     }
 
@@ -112,12 +100,9 @@ public class RoleService {
         Role role = roleRepository.findOneById(roleId)
                 .orElseThrow(() -> getRoleNotFoundException(roleId));
         updateRoleDto.setName(updateRoleDto.getName().toUpperCase());
-        if (!ifPresentRoleWithThisName(updateRoleDto)) {
-            role.setName(roleMapper.mapNewRoleDtoToEntity(updateRoleDto).getName());
-            roleRepository.save(role);
-        } else {
-            throw new RoleFoundException("Istnieje taka nazwa: " + updateRoleDto.getName().toUpperCase());
-        }
+
+        role.setName(roleMapper.mapNewRoleDtoToEntity(updateRoleDto).getName());
+        roleRepository.save(role);
     }
 
     private RoleNotFoundException getRoleWithThisNameNotFoundException(String name) {

@@ -44,7 +44,7 @@ public class CourseController {
     }
 
     @PatchMapping("/{courseId}")
-    public void updateCourseById(@Valid @PathVariable UUID courseId, @RequestBody  NewCourseDto updateCourseDto){
+    public void updateCourseById(@PathVariable UUID courseId, @Valid  @RequestBody  NewCourseDto updateCourseDto){
         courseService.updateCourse(courseId, updateCourseDto);
     }
 

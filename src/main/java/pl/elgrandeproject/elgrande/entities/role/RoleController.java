@@ -1,5 +1,6 @@
 package pl.elgrandeproject.elgrande.entities.role;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
@@ -33,7 +34,7 @@ public class RoleController {
     }
 
     @PostMapping
-    public RoleDto createNewRole(@RequestBody NewRoleDto newRoleDto) {
+    public RoleDto createNewRole(@Valid @RequestBody NewRoleDto newRoleDto) {
         return roleService.saveNewRole(newRoleDto);
     }
 
@@ -43,7 +44,7 @@ public class RoleController {
     }
 
     @PatchMapping("{roleId}/users/{userId}")
-    public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@RequestBody NewRoleDto updatedRoleDto) {
+    public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId, @RequestBody NewRoleDto updatedRoleDto) {
         roleService.changeRoleToUser(roleId, userId, updatedRoleDto);
     }
 
@@ -53,7 +54,7 @@ public class RoleController {
     }
 
     @PatchMapping("/{roleId}")
-    public void updateRoleById(@PathVariable UUID roleId, @RequestBody NewRoleDto updateRoleDto){
+    public void updateRoleById(@PathVariable UUID roleId, @Valid @RequestBody NewRoleDto updateRoleDto){
         roleService.updateRoleById(roleId, updateRoleDto);
     }
 }
