@@ -176,8 +176,6 @@ class UserControllerTest {
     void shouldDeleteUser() throws Exception {
         //given:
         UUID userId = UUID.randomUUID();
-//        UserDto userDto1 = new UserDto(userId, "Anna", "Nowak", "anna@test.com",
-//                "123456", "123456", null);
 
         //when:
         ResultActions response = mockMvc.perform(delete("/api/v1/admin/users/" + userId));

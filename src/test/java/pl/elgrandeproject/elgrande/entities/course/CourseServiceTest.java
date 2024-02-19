@@ -157,42 +157,11 @@ class CourseServiceTest {
     }
 
     @Test
-    void shouldTrueIfThisNameCourseExist() {
-        //give:
-        Course course = new Course("name".toUpperCase());
-        NewCourseDto newCourseDto = new NewCourseDto("name".toUpperCase());
-        Mockito.when(courseRepository.findOneByName(newCourseDto.getName()))
-                .thenReturn(Optional.of(course));
-        //when:
-        boolean actual = testCourseService.ifPresentCourseWithThisName(newCourseDto);
-
-        //then:
-        Assertions.assertThat(actual).isTrue();
-    }
-
-    @Test
-    void shouldFalseIfThisNameCourseNotExist() {
-        //give:
-        Course course = new Course("name".toUpperCase());
-        NewCourseDto newCourseDto = new NewCourseDto("nameNew".toUpperCase());
-        Mockito.when(courseRepository.findOneByName(newCourseDto.getName()))
-                .thenReturn(Optional.empty());
-        //when:
-        boolean actual = testCourseService.ifPresentCourseWithThisName(newCourseDto);
-
-        //then:
-        Assertions.assertThat(actual).isFalse();
-    }
-
-    @Test
     void shouldReturnSavedCourseDto() {
         //give:
         NewCourseDto newCourseDto = new NewCourseDto("test-nameCourse".toUpperCase());
         Course course = new Course(newCourseDto.getName());
         CourseDto courseDto = new CourseDto(course.getId(), course.getName(), null);
-
-        Mockito.when(courseRepository.findOneByName(newCourseDto.getName()))
-                .thenReturn(Optional.empty());
 
         Mockito.when(courseRepository.save(course))
                 .thenReturn(course);
@@ -253,12 +222,10 @@ class CourseServiceTest {
 
         Mockito.when(courseMapper.mapNewCourseDtoToEntity(updateCourse))
                 .thenReturn(course);
-
         course.setName(updateCourse.getName());
-        Mockito.when(courseRepository.findOneByName(updateCourse.getName()))
-                .thenReturn(Optional.empty());
 
         //when:
+
         testCourseService.updateCourse(course.getId(), updateCourse);
         //then:
         Mockito.verify(courseRepository).save(courseArgumentCaptor.capture());
@@ -271,7 +238,6 @@ class CourseServiceTest {
         //given:
         Course course = new Course("test-name".toUpperCase());
         NewCourseDto updateCourse = new NewCourseDto("test-name".toUpperCase());
-        CourseDto courseDto = new CourseDto(course.getId(), course.getName(), null);
 
         Mockito.when(courseRepository.findOneById(course.getId()))
                 .thenReturn(Optional.of(course));
@@ -279,19 +245,13 @@ class CourseServiceTest {
         Mockito.when(courseMapper.mapNewCourseDtoToEntity(updateCourse))
                 .thenReturn(course);
 
-        Mockito.when(courseMapper.mapEntityToDto(course))
-                .thenReturn(courseDto);
-
         Mockito.when(courseRepository.findOneByName(updateCourse.getName()))
-                .thenReturn(Optional.of(course));
+                .thenThrow(new CourseFoundException(updateCourse + " istnieje już taka nazwa"));
 
         //when:
-        Throwable throwable = Assertions.catchThrowable(() ->
-                testCourseService.updateCourse(course.getId(), updateCourse));
+        testCourseService.updateCourse(course.getId(), updateCourse);
 
         //then:
-        Assertions.assertThat(throwable).isInstanceOf(CourseFoundException.class);
-        Assertions.assertThat(throwable)
-                .hasMessage(("Istnieje już taka nazwa kursu: " + updateCourse.getName()));
+        Mockito.verify(courseRepository).save(courseArgumentCaptor.capture());
     }
 }

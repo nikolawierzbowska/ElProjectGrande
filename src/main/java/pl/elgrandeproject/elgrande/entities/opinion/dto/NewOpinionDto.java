@@ -1,10 +1,12 @@
 package pl.elgrandeproject.elgrande.entities.opinion.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record NewOpinionDto(
-        @Size(max = 180, message = "The opinion can not be longer than 120 characters")
+        @NotBlank(message = "Pole nie może być puste")
+        @Size(max = 180, message = "Opinia moż zawierać max. 180 znaków")
         String description,
         String userName
 ) {

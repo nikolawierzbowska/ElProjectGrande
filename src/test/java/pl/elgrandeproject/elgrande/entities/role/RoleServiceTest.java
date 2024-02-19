@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
-import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -142,35 +141,7 @@ class RoleServiceTest {
     }
 
     @Test
-    void shouldTrueIfThisNameRoleExist() {
-        //give:
-        Role role = new Role("role1".toUpperCase());
-        NewRoleDto newRoleDto = new NewRoleDto("role1".toUpperCase());
-        Mockito.when(roleRepository.findByName(newRoleDto.getName()))
-                .thenReturn(Optional.of(role));
-        //when:
-        boolean actual = testRoleService.ifPresentRoleWithThisName(newRoleDto);
-
-        //then:
-        Assertions.assertThat(actual).isTrue();
-    }
-
-    @Test
-    void shouldFalseIfThisNameRoleNotExist() {
-        //give:
-        Role role = new Role("role1".toUpperCase());
-        NewRoleDto newRoleDto = new NewRoleDto("role1".toUpperCase());
-        Mockito.when(roleRepository.findByName(newRoleDto.getName()))
-                .thenReturn(Optional.empty());
-        //when:
-        boolean actual = testRoleService.ifPresentRoleWithThisName(newRoleDto);
-
-        //then:
-        Assertions.assertThat(actual).isFalse();
-    }
-
-    @Test
-    void shouldThrowRoleDtoFoundException() {
+    void shouldNotSaveNewRoleWhenExistThisName() {
         //given:
         Role role = new Role("role1");
         NewRoleDto newRoleDto = new NewRoleDto("role1");
@@ -179,12 +150,10 @@ class RoleServiceTest {
                 .thenReturn(Optional.of(role));
 
         //when:
-        Throwable throwable = Assertions.catchThrowable(() ->
-                testRoleService.saveNewRole(newRoleDto));
+        RoleDto actual = testRoleService.saveNewRole(newRoleDto);
 
         //then:
-        Assertions.assertThat(throwable).isInstanceOf(RoleFoundException.class);
-        Assertions.assertThat(throwable).hasMessage("Taka nazwa : " + newRoleDto.getName() + " już istnieje !");
+        Assertions.assertThat(actual).isNull();
     }
 
     @Test
@@ -193,9 +162,6 @@ class RoleServiceTest {
         NewRoleDto newRoleDto = new NewRoleDto("new-role".toUpperCase());
         Role role = new Role(newRoleDto.getName());
         RoleDto roleDto = new RoleDto(role.getId(), role.getName(), null);
-
-        Mockito.when(roleRepository.findByName(newRoleDto.getName()))
-                .thenReturn(Optional.empty());
 
         Mockito.when(roleRepository.save(role))
                 .thenReturn(role);
@@ -419,13 +385,9 @@ class RoleServiceTest {
         //given:
         Role role = new Role("role1".toUpperCase());
         NewRoleDto newRoleDto = new NewRoleDto("role1".toUpperCase());
-        RoleDto roleDto = new RoleDto(role.getId(), role.getName(), null);
 
         Mockito.when(roleRepository.findOneById(role.getId()))
                 .thenReturn(Optional.of(role));
-
-        Mockito.when(roleRepository.findByName(role.getName()))
-                .thenReturn(Optional.empty());
 
         Mockito.when(roleMapper.mapNewRoleDtoToEntity(newRoleDto))
                 .thenReturn(role);
@@ -437,26 +399,4 @@ class RoleServiceTest {
         Mockito.verify(roleRepository).save(roleArgumentCaptor.capture());
     }
 
-    @Test
-    void testThrowRoleFoundExceptionWhenUpdateRoleById() {
-        //given:
-        Role role = new Role("role1".toUpperCase());
-        NewRoleDto newRoleDto = new NewRoleDto(role.getName());
-        RoleDto roleDto = new RoleDto(role.getId(), role.getName(), null);
-        Mockito.when(roleRepository.findOneById(role.getId()))
-                .thenReturn(Optional.of(role));
-
-        Mockito.when(roleRepository.findByName(role.getName()))
-                .thenReturn(Optional.of(role));
-
-        Mockito.when(roleMapper.mapEntityToDto(role))
-                .thenReturn(roleDto);
-
-        // when:
-        Throwable throwable = Assertions.catchThrowable(() ->
-                testRoleService.updateRoleById(role.getId(), newRoleDto));
-        //then:
-        Assertions.assertThat(throwable).isInstanceOf(RoleFoundException.class);
-        Assertions.assertThat(throwable).hasMessage("Istnieje taka nazwa: " + newRoleDto.getName());
-    }
 }

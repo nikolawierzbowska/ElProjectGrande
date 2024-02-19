@@ -10,6 +10,7 @@ import pl.elgrandeproject.elgrande.entities.course.exception.CourseFoundExceptio
 import pl.elgrandeproject.elgrande.entities.course.exception.CourseNotFoundException;
 import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfNewNameCourseException;
 import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfUpdateNameCourseException;
+import pl.elgrandeproject.elgrande.entities.opinion.exception.OpinionNotFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
@@ -71,6 +72,13 @@ public class ErrorHandler {
     public ErrorResponse nameOfCourseExist(CourseFoundException e){
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(OpinionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse opinionNotFound(OpinionNotFoundException e){
+        return new ErrorResponse(e.getMessage());
+    }
+
 
     @ExceptionHandler(LengthOfUpdateNameCourseException.class)
     @ResponseStatus(HttpStatus.CONFLICT)

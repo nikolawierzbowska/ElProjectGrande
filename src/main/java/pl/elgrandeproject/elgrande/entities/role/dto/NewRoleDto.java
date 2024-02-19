@@ -1,5 +1,6 @@
 package pl.elgrandeproject.elgrande.entities.role.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import pl.elgrandeproject.elgrande.entities.role.validation.UnoccupiedRoleName;
 public class NewRoleDto {
 
     @UnoccupiedRoleName
+    @NotBlank(message = "Nie moze być puste pole")
     String name;
 
     public NewRoleDto(String name) {
