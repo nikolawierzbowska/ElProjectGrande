@@ -13,6 +13,7 @@ import pl.elgrandeproject.elgrande.entities.course.exception.LengthOfUpdateNameC
 import pl.elgrandeproject.elgrande.entities.opinion.exception.OpinionNotFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleFoundException;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
+import pl.elgrandeproject.elgrande.entities.user.exception.ForbiddenUserAccessException;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.validation.EmailInUseException;
 
@@ -38,6 +39,12 @@ public class ErrorHandler {
                 .collect(Collectors.joining(" | "));
 
         return new ErrorResponse(errMsg);
+    }
+
+    @ExceptionHandler(ForbiddenUserAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse forbiddenUserAccess(ForbiddenUserAccessException e){
+        return new ErrorResponse(e.getMessage());
     }
 
 
@@ -91,6 +98,8 @@ public class ErrorHandler {
     public ErrorResponse notCorrectLength(LengthOfNewNameCourseException e){
         return new ErrorResponse(e.getMessage());
     }
+
+
 
     public record ErrorResponse(String info) {
 

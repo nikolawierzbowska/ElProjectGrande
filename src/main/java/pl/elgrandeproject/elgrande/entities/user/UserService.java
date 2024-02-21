@@ -2,7 +2,9 @@ package pl.elgrandeproject.elgrande.entities.user;
 
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
+import pl.elgrandeproject.elgrande.entities.user.exception.ForbiddenUserAccessException;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
+import pl.elgrandeproject.elgrande.registration.Principal;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,10 +33,13 @@ public class UserService {
                 .orElseThrow(() -> getUserNotFoundException(userId));
     }
 
-    public UserDto getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(entity -> userMapper.mapEntityToDto(entity))
-                .orElseThrow(() -> getUserWithThisEmailNotFoundException(email));
+    public UserDto getUserByEmail(String email, Principal principal) {
+        if(email.equals(principal.userDetails().getUsername())) {
+            return userRepository.findByEmail(email)
+                    .map(entity -> userMapper.mapEntityToDto(entity))
+                    .orElseThrow(() -> getUserWithThisEmailNotFoundException(principal.userDetails().getUsername()));
+        }
+            throw new ForbiddenUserAccessException("Brak uprawnień");
     }
 
     public void softDeleteUser(UUID userId) {

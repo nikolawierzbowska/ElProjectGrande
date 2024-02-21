@@ -9,15 +9,29 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
+import pl.elgrandeproject.elgrande.config.SecurityConfiguration;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 import pl.elgrandeproject.elgrande.entities.user.dto.UserDto;
+import pl.elgrandeproject.elgrande.entities.user.exception.ForbiddenUserAccessException;
 import pl.elgrandeproject.elgrande.entities.user.exception.UserNotFoundException;
+import pl.elgrandeproject.elgrande.registration.Principal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static pl.elgrandeproject.elgrande.config.SecurityConfiguration.USER;
+
 @ExtendWith(MockitoExtension.class)
+@Import(SecurityConfiguration.class)
 class UserServiceTest {
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
     private final UserMapper userMapper = Mockito.mock(UserMapper.class);
@@ -111,21 +125,29 @@ class UserServiceTest {
     void shouldThrowUserNotFoundExceptionWhenGetUserByEmail() {
         //given:
         String email = "email";
+        UserDetails userDetails = new User("anna@test.com", "password", new ArrayList<>());
+
+
+        Principal principal = new Principal();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         Mockito.when(userRepository.findByEmail(email))
                 .thenReturn(Optional.empty());
         //when:
         Throwable throwable = Assertions.catchThrowable(() ->
-                testUserService.getUserByEmail(email));
+                testUserService.getUserByEmail(email, principal));
 
         //then:
-        Assertions.assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        Assertions.assertThat(throwable).hasMessage("User z tym email " + email + " nie istnieje");
+        Assertions.assertThat(throwable).isInstanceOf(ForbiddenUserAccessException.class);
+        Assertions.assertThat(throwable).hasMessage("Brak uprawnień");
     }
 
     @Test
+    @WithMockUser(roles = USER)
     void shouldReturnUserDtoByEmail() {
         //given:
-        UserClass user = new UserClass("name1", "lastname1", "email1", "password1",
+        UserClass user = new UserClass("name1", "lastname1", "anna@test.com", "password",
                 "rPassword1");
         UserDto userDto = new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                 user.getPassword(), user.getRepeatedPassword(), null);
@@ -135,9 +157,12 @@ class UserServiceTest {
 
         Mockito.when(userMapper.mapEntityToDto(user))
                 .thenReturn(userDto);
-
+        UserDetails userDetails = new User("anna@test.com", "password", new ArrayList<>());
+        Principal principal = new Principal();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         //when:
-        UserDto actual = testUserService.getUserByEmail(user.getEmail());
+        UserDto actual = testUserService.getUserByEmail(user.getEmail(), principal);
 
         //then:
         Assertions.assertThat(actual).isNotNull();

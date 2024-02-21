@@ -33,9 +33,9 @@ public class Course {
 
     @OneToMany(
             fetch = FetchType.EAGER,
-            mappedBy = "courses",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            mappedBy = "courses")
+//            cascade = CascadeType.ALL)
+//            orphanRemoval = true)
     private List<Opinion> opinions = new ArrayList<>();
 
     public Course(@NotNull String name) {
@@ -45,5 +45,9 @@ public class Course {
     public void addOpinion(Opinion opinion){
         opinion.setCourses(this);
         opinions.add(opinion);
+    }
+
+    public void removeOpinion(Opinion opinion){
+        opinions.remove(opinion);
     }
 }

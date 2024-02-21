@@ -1,5 +1,6 @@
 package pl.elgrandeproject.elgrande.entities.opinion;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.course.Course;
 import pl.elgrandeproject.elgrande.entities.course.CourseRepository;
@@ -17,6 +18,7 @@ import static pl.elgrandeproject.elgrande.entities.course.CourseService.getCours
 import static pl.elgrandeproject.elgrande.entities.user.UserService.getUserWithThisEmailNotFoundException;
 
 @Service
+@Slf4j
 public class OpinionService {
     private final OpinionRepository opinionRepository;
     private final OpinionMapper opinionMapper;
@@ -49,6 +51,7 @@ public class OpinionService {
 
         Opinion opinion = opinionMapper.mapNewOpinionDtoToEntity(newOpinionDto);
 
+
         UserClass user = userRepository.findByEmail(principal.userDetails().getUsername())
                 .orElseThrow(() -> getUserWithThisEmailNotFoundException(principal.userDetails().getUsername()));
 
@@ -59,9 +62,16 @@ public class OpinionService {
     }
 
     public void deleteOpinion(UUID courseId, UUID opinionId) {
+        Course course = courseRepository.findOneById(courseId)
+                .orElseThrow(() -> getCourseNotFoundException(courseId));
+        log.info("Deleting opinion with courseId: {} and opinionId: {}", courseId, opinionId);
         Opinion opinion = opinionRepository.findOneById(courseId, opinionId)
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
-        opinionRepository.delete((opinion));
+
+            course.removeOpinion(opinion);
+
+            opinionRepository.deleteById(opinionId);
+
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {
