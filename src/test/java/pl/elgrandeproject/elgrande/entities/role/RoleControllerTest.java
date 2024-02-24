@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import pl.elgrandeproject.elgrande.config.SecurityConfiguration;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.UpdateRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -198,7 +199,7 @@ class RoleControllerTest {
     @WithMockUser(roles = ADMIN)
     void shouldChangeNameRole() throws Exception {
         //given:
-        NewRoleDto newRoleDto = new NewRoleDto("newName");
+        UpdateRoleDto newRoleDto = new UpdateRoleDto("newName");
         Role role = new Role(newRoleDto.getName());
         UserClass userClass = Instancio.create(UserClass.class);
 

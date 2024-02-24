@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.UpdateRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -270,7 +271,7 @@ class RoleServiceTest {
         Role role = new Role("role1");
         UserClass user = new UserClass("name", "lastname", "email", "password",
                 "rPassword");
-        NewRoleDto newRoleDto = new NewRoleDto("new");
+        UpdateRoleDto newRoleDto = new UpdateRoleDto("new");
 
         Mockito.when(roleRepository.findByName(newRoleDto.getName()))
                 .thenReturn(Optional.empty());
@@ -292,7 +293,7 @@ class RoleServiceTest {
         Role role = new Role("role1".toUpperCase());
         UserClass user = new UserClass("name", "lastname", "email", "password",
                 "rPassword");
-        NewRoleDto newRoleDto = new NewRoleDto("role1".toUpperCase());
+        UpdateRoleDto newRoleDto = new UpdateRoleDto("role1".toUpperCase());
 
         Mockito.when(roleRepository.findByName(newRoleDto.getName()))
                 .thenReturn(Optional.of(role));
@@ -314,7 +315,7 @@ class RoleServiceTest {
         Role role = new Role("role1".toUpperCase());
         UserClass user = new UserClass("name", "lastname", "email", "password",
                 "rPassword");
-        NewRoleDto newRoleDto = new NewRoleDto("role1".toUpperCase());
+        UpdateRoleDto newRoleDto = new UpdateRoleDto("role1".toUpperCase());
 
         Mockito.when(userRepository.findOneById(user.getId()))
                 .thenReturn(Optional.of(user));

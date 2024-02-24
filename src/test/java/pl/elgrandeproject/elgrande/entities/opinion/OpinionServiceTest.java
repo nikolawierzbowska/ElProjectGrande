@@ -3,8 +3,6 @@ package pl.elgrandeproject.elgrande.entities.opinion;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,15 +51,16 @@ class OpinionServiceTest {
         OpinionDto opinionDto1 = new OpinionDto(opinion1.getId(), opinion1.getDescription(), opinion1.getUserName());
         OpinionDto opinionDto2 = new OpinionDto(opinion2.getId(), opinion2.getDescription(), opinion2.getUserName());
 
-        List<OpinionDto> listDto = List.of(opinionDto1, opinionDto2);
+        List<OpinionDto> listDto = List.of(opinionDto2, opinionDto1);
 
         Mockito.when(opinionMapper.mapEntityToDto(listOpinion.get(0)))
-                .thenReturn(listDto.get(0));
-        Mockito.when(opinionMapper.mapEntityToDto(listOpinion.get(1)))
                 .thenReturn(listDto.get(1));
+        Mockito.when(opinionMapper.mapEntityToDto(listOpinion.get(1)))
+                .thenReturn(listDto.get(0));
 
         //when:
         List<OpinionDto> actual = testOpinionService.getAllOpinionsByCourseId(course.getId());
+
 
         //then:
         Assertions.assertThat(actual.size()).isEqualTo(2);
@@ -201,6 +200,8 @@ class OpinionServiceTest {
         //given:
         Course course = new Course("course-test");
         Opinion opinion = new Opinion("desc1", "name1");
+        Mockito.when(courseRepository.findOneById(course.getId()))
+                .thenReturn(Optional.of(course));
 
         Mockito.when(opinionRepository.findOneById(course.getId(), opinion.getId()))
                 .thenReturn(Optional.empty());
@@ -212,21 +213,21 @@ class OpinionServiceTest {
         Assertions.assertThat(throwable.getMessage()).isEqualTo("Nie znaleziono opini o takim id: " + opinion.getId());
     }
 
-    @Captor
-    private ArgumentCaptor<Opinion> opinionArgumentCaptor;
-
     @Test
     void testDeleteOpinion() {
         //given:
         Course course = new Course("course-test");
         Opinion opinion = new Opinion("desc1", "name1");
+        Mockito.when(courseRepository.findOneById(course.getId()))
+                .thenReturn(Optional.of(course));
         Mockito.when(opinionRepository.findOneById(course.getId(), opinion.getId()))
                 .thenReturn(Optional.of(opinion));
-
+        course.removeOpinion(opinion);
         //when:
+
         testOpinionService.deleteOpinion(course.getId(), opinion.getId());
 
         //then:
-        Mockito.verify(opinionRepository).delete(opinionArgumentCaptor.capture());
+        Mockito.verify(opinionRepository).deleteById(opinion.getId());
     }
 }

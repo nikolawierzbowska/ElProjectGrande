@@ -11,8 +11,7 @@ import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 import pl.elgrandeproject.elgrande.registration.Principal;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static pl.elgrandeproject.elgrande.entities.course.CourseService.getCourseNotFoundException;
 import static pl.elgrandeproject.elgrande.entities.user.UserService.getUserWithThisEmailNotFoundException;
@@ -34,9 +33,11 @@ public class OpinionService {
     }
 
     List<OpinionDto> getAllOpinionsByCourseId(UUID courseId) {
-        return opinionRepository.findOpinion(courseId).stream()
+        List<OpinionDto> list = new ArrayList<>(opinionRepository.findOpinion(courseId).stream()
                 .map(entity -> opinionMapper.mapEntityToDto(entity))
-                .toList();
+                .toList());
+        Collections.reverse(list);
+        return list;
     }
 
     public OpinionDto getOpinionDtoById(UUID courseId, UUID opinionId) {
@@ -68,10 +69,8 @@ public class OpinionService {
         Opinion opinion = opinionRepository.findOneById(courseId, opinionId)
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
 
-            course.removeOpinion(opinion);
-
-            opinionRepository.deleteById(opinionId);
-
+        course.removeOpinion(opinion);
+        opinionRepository.deleteById(opinionId);
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {

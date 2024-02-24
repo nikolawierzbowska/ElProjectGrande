@@ -3,6 +3,7 @@ package pl.elgrandeproject.elgrande.entities.role;
 import org.springframework.stereotype.Service;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.UpdateRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.exception.RoleNotFoundException;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
@@ -56,7 +57,7 @@ public class RoleService {
     }
 
 
-    public Role findRoleByName(NewRoleDto newRoleDto) {
+    public Role findRoleByName(UpdateRoleDto newRoleDto) {
         return roleRepository.findByName(newRoleDto.getName().toUpperCase())
                 .orElseThrow(() -> getRoleWithThisNameNotFoundException(newRoleDto.getName()));
     }
@@ -75,7 +76,7 @@ public class RoleService {
         userRepository.save(user);
     }
 
-    public void changeRoleToUser(UUID oldRoleId, UUID userId, NewRoleDto updatedRoleDto) {
+    public void changeRoleToUser(UUID oldRoleId, UUID userId, UpdateRoleDto updatedRoleDto) {
         findRoleByName(updatedRoleDto);
         UserClass user = findUserById(userId);
         Optional<Role> oldRoleUserToChange = user.getRoles().stream()

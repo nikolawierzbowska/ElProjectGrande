@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import pl.elgrandeproject.elgrande.entities.role.dto.NewRoleDto;
 import pl.elgrandeproject.elgrande.entities.role.dto.RoleDto;
+import pl.elgrandeproject.elgrande.entities.role.dto.UpdateRoleDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class RoleController {
     }
 
     @PatchMapping("{roleId}/users/{userId}")
-    public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@Valid @RequestBody NewRoleDto updatedRoleDto) {
+    public void changeRoleToUser(@PathVariable UUID roleId, @PathVariable UUID userId,@Valid @RequestBody UpdateRoleDto updatedRoleDto) {
         roleService.changeRoleToUser(roleId, userId, updatedRoleDto);
     }
 
