@@ -16,8 +16,6 @@ The project is written in Java 17 and utilizes several libraries and packages to
 - Flyway for database migration - flyway-core (Version: 9.22.3)
 
 <h4>Testing</h4>
-- Spring Boot Starter Test<br>
-- Spring Security Test<br>
 - JUnit
 
 <h2>Usage</h2>
