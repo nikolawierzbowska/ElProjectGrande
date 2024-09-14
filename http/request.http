@@ -155,8 +155,8 @@ POST localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "nikola@gmail.com",
-  "password":"Nikola123#"
+  "email": "igor@gmail.com",
+  "password":"Igor123#"
 }
 
 > {% client.global.set("auth-token", response.body.token); %}
@@ -181,7 +181,7 @@ Authorization: Bearer {{auth-token}}
 
 ###
 
-GET localhost:8080/api/v1/users/by-ala@gmail.com
+GET localhost:8080/api/v1/users/by-nikola@gmail.com
 Authorization: Bearer {{auth-token}}
 
 ###
@@ -193,7 +193,20 @@ Authorization: Bearer {{auth-token}}
 GET http://localhost:8080/api/v1/admin/users
 Authorization: Bearer {{auth-token}}
 
-###
+
+######################## ForgotPassword
+
+POST localhost:8080/api/v1/forgotPassword/verifyMail/{email}
+
+
+###############
+
+POST localhost:8080/api/v1/forgotPassword/verifyOtp/{otp}/{email}
+
+
+##############
+
+POST localhost:8080/api/v1/forgotPassword/changePassword/{email}
 
 
 

@@ -1,28 +1,34 @@
 package pl.elgrandeproject.elgrande.entities.email;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.elgrandeproject.elgrande.entities.user.UserClass;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Builder
 public class ForgotPassword {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer fpid;
+    private UUID fpid;
     @Column(nullable = false)
-    private Integer otp;
+    private int otp;
     @Column(nullable = false)
     private Date expirationTime;
-    @PrimaryKeyJoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     @OneToOne
     private UserClass users;
+
+    @Builder
+    public ForgotPassword(UUID fpid, int otp, Date expirationTime, UserClass users) {
+        this.fpid = fpid != null ? fpid : UUID.randomUUID();
+        this.otp = otp;
+        this.expirationTime = expirationTime;
+        this.users = users;
+    }
 }

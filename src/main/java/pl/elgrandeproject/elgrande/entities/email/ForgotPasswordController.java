@@ -11,11 +11,12 @@ import pl.elgrandeproject.elgrande.registration.email.EmailService;
 import pl.elgrandeproject.elgrande.registration.email.MailBody;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/forgotPassword")
+@RequestMapping("/api/v1/forgotPassword")
 public class ForgotPasswordController {
 
     private final UserRepository userRepository;
@@ -42,9 +43,10 @@ public class ForgotPasswordController {
                 .subject("OTP for Forgot Password request")
                 .build();
 
+        System.out.println("Sending OTP to: " + email);
         ForgotPassword fp = ForgotPassword.builder()
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis()+70*1000))
+                .expirationTime(Date.from(Instant.now().plus(70, ChronoUnit.SECONDS)))
                 .users(userClass)
                 .build();
 
@@ -61,7 +63,7 @@ public class ForgotPasswordController {
         ForgotPassword forgotPassword = forgotPasswordRepository.findByOtpAndUser(otp, userClass)
                 .orElseThrow(() -> new RuntimeException("Invalid OTP for email: " + email));
 
-        if(forgotPassword.getExpirationTime().before(Date.from(Instant.MAX))){
+        if(forgotPassword.getExpirationTime().before(new Date())){
             forgotPasswordRepository.deleteById(forgotPassword.getFpid());
             return new ResponseEntity<>("OTP  has expire", HttpStatus.EXPECTATION_FAILED);
         }
