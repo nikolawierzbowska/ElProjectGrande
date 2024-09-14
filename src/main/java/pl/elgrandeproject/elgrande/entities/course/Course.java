@@ -32,10 +32,10 @@ public class Course {
     private String name;
 
     @OneToMany(
+            mappedBy = "courses",
             fetch = FetchType.EAGER,
-            mappedBy = "courses")
-//            cascade = CascadeType.ALL)
-//            orphanRemoval = true)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Opinion> opinions = new ArrayList<>();
 
     public Course(@NotNull String name) {
@@ -43,11 +43,12 @@ public class Course {
     }
 
     public void addOpinion(Opinion opinion){
-        opinion.setCourses(this);
         opinions.add(opinion);
+        opinion.setCourses(this);
     }
 
     public void removeOpinion(Opinion opinion){
         opinions.remove(opinion);
+        opinion.setCourses(null);
     }
 }

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.elgrandeproject.elgrande.entities.email.ForgotPassword;
 import pl.elgrandeproject.elgrande.entities.role.Role;
 
 import java.util.HashSet;
@@ -37,6 +38,9 @@ public class UserClass {
     private String password;
     @NotBlank(message = "The field can not be empty.")
     private String repeatedPassword;
+
+    @OneToOne(mappedBy = "users")
+    private ForgotPassword forgotPassword;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

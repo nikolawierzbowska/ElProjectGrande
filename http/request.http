@@ -2,9 +2,10 @@
 
 POST localhost:8080/api/v1/admin/roles
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
-  "name": "ADMIN"
+  "name": "MANAGER1"
 }
 
 > {%
@@ -28,8 +29,24 @@ Authorization: Bearer {{auth-token}}
 
 ###
 
-PATCH localhost:8080/api/v1/admin/roles/{{role-id}}/users/{{us-uuid}}
+PATCH localhost:8080/api/v1/admin/roles/13cd7648-9c9f-4e39-aac4-d8aa00d83830/users/c0458467-ce2a-4435-8996-eee002dff75e
+Content-Type: application/json
+#Authorization: Bearer {{auth-token}}
+
+{
+  "name": "ADMIN"
+}
+
+
+###
+
+PATCH localhost:8080/api/v1/admin/roles/039b9611-fe10-4517-845a-742d43a7e674
+Content-Type: application/json
 Authorization: Bearer {{auth-token}}
+
+{
+  "name": "USER4"
+}
 
 ###
 
@@ -38,8 +55,8 @@ Authorization: Bearer {{auth-token}}
 
 ##################ASSIGN ROLE TO USER
 
-PUT localhost:8080/api/v1/admin/roles/4af4444f-630a-4d82-8827-4e268292d6d7/users/65c8953f-8206-47ff-84bc-9fbdb73b8f79
-#Authorization: Bearer {{auth-token}}
+PUT localhost:8080/api/v1/admin/roles/c99b317b-2889-4b7b-97c4-ba587a8f7418/users/375646d0-2183-4e0e-8f0b-8c1887c26cf6
+Authorization: Bearer {{auth-token}}
 
 
 ################## COURSE
@@ -49,7 +66,7 @@ Content-Type: application/json
 Authorization: Bearer {{auth-token}}
 
 {
-  "name": "Matura z matematyki Podstawowej"
+  "name": "Matura z matematyki "
 }
 
 > {%
@@ -71,30 +88,30 @@ Authorization: Bearer {{auth-token}}
 ###
 
 
-PATCH localhost:8080/api/v1/admin/courses/3fad1d6a-f04c-4d96-b220-aba44d0c2d05
+PATCH localhost:8080/api/v1/admin/courses/28d9c555-21a1-4207-8c74-002eb8e077d8
 Content-Type: application/json
 Authorization: Bearer {{auth-token}}
 
 {
-  "name": "Mat - update2"
+  "name": "MATUra12258"
 }
 
 ###
 
 
-DELETE localhost:8080/api/v1/admin/courses/fb716900-35bb-4f5b-899f-ece06caad87e
+DELETE localhost:8080/api/v1/admin/courses/11b25c37-cfda-4592-a621-c446af6b3462
 Authorization: Bearer {{auth-token}}
 
 
 ###  OPINIONS
 
-POST localhost:8080/api/v1/courses/1da12639-4ce8-4c06-9f25-381071c85de2/opinions
+POST localhost:8080/api/v1/courses/078dbf81-162c-48fd-8cfa-e04d53882fae/opinions
 Content-Type: application/json
 Authorization: Bearer {{auth-token}}
 
 {
 
-  "description": "Kurs umożliwia mi śledzenie postępów i dostosowywanie tempa nauki."
+  "description": "do ppppppppppppppppppppppp"
 }
 
 > {%
@@ -103,16 +120,16 @@ Authorization: Bearer {{auth-token}}
 
 
 ###
-GET localhost:8080/api/v1/courses/1da12639-4ce8-4c06-9f25-381071c85de2/opinions
+GET localhost:8080/api/v1/courses/078dbf81-162c-48fd-8cfa-e04d53882fae/opinions
 
 ###
 
-GET localhost:8080/api/v1/courses/{course-id}/opinions/{opinion-id}
-
+GET localhost:8080/api/v1/courses/078dbf81-162c-48fd-8cfa-e04d53882fae/opinions/340b3224-9148-4793-baba-d6ae37a56334
+Authorization: Bearer {{auth-token}}
 
 ###
 
-DELETE localhost:8080/api/v1/admin/courses/0b20d02b-42d9-4328-9254-e91421e356ac/opinions/373f452b-fa11-4a40-832c-bbdcb9938af5
+DELETE localhost:8080/api/v1/admin/courses/078dbf81-162c-48fd-8cfa-e04d53882fae/opinions/340b3224-9148-4793-baba-d6ae37a56334
 Authorization: Bearer {{auth-token}}
 
 ##################### USER - auth
@@ -121,11 +138,11 @@ POST localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 
 {
-  "firstName": "Nikola",
+  "firstName":"Adam",
   "lastName": "Nowak",
-  "email": "Nikola@gmail.com",
-  "password": "Nikola123#",
-  "repeatedPassword": "Nikola123#"
+  "email": "adamadam@gmail.com",
+  "password": "Ola1234#",
+  "repeatedPassword": "Ola1234#"
 }
 > {%
     client.global.set("us-uuid", response.body.id)
@@ -138,7 +155,7 @@ POST localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "Nikola@gmail.com",
+  "email": "nikola@gmail.com",
   "password":"Nikola123#"
 }
 
@@ -159,12 +176,12 @@ Authorization: Bearer {{auth-token}}
 
 ###
 
-GET localhost:8080/api/v1/admin/users/{id}
+GET localhost:8080/api/v1/admin/users/c0458467-ce2a-4435-8996-eee002dff75e
 Authorization: Bearer {{auth-token}}
 
 ###
 
-GET localhost:8080/api/v1/admin/users/by-{email}
+GET localhost:8080/api/v1/users/by-ala@gmail.com
 Authorization: Bearer {{auth-token}}
 
 ###

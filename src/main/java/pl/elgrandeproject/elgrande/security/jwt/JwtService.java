@@ -19,7 +19,7 @@ public class JwtService {
     public JwtService(AuthConfigProperties authProperties) {
         this.authProperties = authProperties;
     }
-
+ 
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)

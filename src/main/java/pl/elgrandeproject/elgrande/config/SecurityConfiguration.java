@@ -37,7 +37,7 @@ public class SecurityConfiguration {
     private static final String[] URL_ADMIN = {"/api/v1/admin/roles/**", "/error/**", "/api/v1/admin/courses/**",
             "/api/v1/admin/users/**", "/api/v1/admin/courses/{courseId}/opinions", "/api/v1/courses/{courseId}/opinions/{opinionId}"};
     private static final String[] URL_USER = {"/error/**", "/api/v1/user/**","/api/v1/courses/{courseId}/opinions",
-            "/api/v1/courses/{courseId}/opinions/{opinionId}"};
+            "/api/v1/courses/{courseId}/opinions/{opinionId}", "/api/v1/forgotPassword/**"};
 
     public static final String ADMIN = "ADMIN";
     public static final String USER = "USER";

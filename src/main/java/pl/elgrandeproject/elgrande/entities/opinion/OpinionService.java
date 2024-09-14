@@ -11,7 +11,10 @@ import pl.elgrandeproject.elgrande.entities.user.UserClass;
 import pl.elgrandeproject.elgrande.entities.user.UserRepository;
 import pl.elgrandeproject.elgrande.registration.Principal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import static pl.elgrandeproject.elgrande.entities.course.CourseService.getCourseNotFoundException;
 import static pl.elgrandeproject.elgrande.entities.user.UserService.getUserWithThisEmailNotFoundException;
@@ -68,9 +71,8 @@ public class OpinionService {
         log.info("Deleting opinion with courseId: {} and opinionId: {}", courseId, opinionId);
         Opinion opinion = opinionRepository.findOneById(courseId, opinionId)
                 .orElseThrow(() -> getOpinionNotFoundException(opinionId));
-
         course.removeOpinion(opinion);
-        opinionRepository.deleteById(opinionId);
+        opinionRepository.delete(opinion);
     }
 
     public OpinionNotFoundException getOpinionNotFoundException(UUID id) {

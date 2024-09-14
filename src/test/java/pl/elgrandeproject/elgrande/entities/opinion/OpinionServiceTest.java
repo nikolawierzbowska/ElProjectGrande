@@ -228,6 +228,6 @@ class OpinionServiceTest {
         testOpinionService.deleteOpinion(course.getId(), opinion.getId());
 
         //then:
-        Mockito.verify(opinionRepository).deleteById(opinion.getId());
+        Mockito.verify(opinionRepository).delete(opinion);
     }
 }

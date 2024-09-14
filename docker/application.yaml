@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://elGrandedb:5432/elgrandeproject
+  jpa:
+    show-sql: false
